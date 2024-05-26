@@ -1,5 +1,9 @@
 {
   "FormattingOptions": {
+    "NewLine": "\n",
+    "IndentationSize": 2,
+    "TabSize": 2,
+    "UseTabs": false,
     "NewLinesForBracesInLambdaExpressionBody": false,
     "NewLinesForBracesInAnonymousMethods": false,
     "NewLinesForBracesInAnonymousTypes": false,
@@ -12,9 +16,8 @@
     "NewLineForElse": false,
     "NewLineForCatch": false,
     "NewLineForFinally": false,
-    "NewLine": "\n",
-    "IndentationSize": 2,
-    "TabSize": 2,
-    "UseTabs": false
+    "NewLineForMembersInObjectInit": false,
+    "NewLineForMembersInAnonymousTypes": false,
+    "NewLineForClausesInQuery": false
   }
 }
