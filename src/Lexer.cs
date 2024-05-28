@@ -55,16 +55,16 @@ namespace Indra.Astra {
                         case '\r': { // CR
                                 appendToken_newLine(cursor.Next is '\n' ? 2 : 1);
                                 state._endLine();
-                                break;
+                                continue;
                             }
                         case '\n': {// LF
                                 appendToken_newLine(cursor.Next is '\r' ? 2 : 1);
                                 state._endLine();
-                                break;
+                                continue;
                             }
                         // skip spaces and tabs and null chars within a line (after indentation & first token / between tokens / end of line)
                         case ' ' or '\t' or '\0': {
-                                break;
+                                continue;
                             }
                         #endregion
                         #region Symbols

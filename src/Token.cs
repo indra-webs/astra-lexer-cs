@@ -240,6 +240,15 @@ namespace Indra.Astra {
                 _ => false
             };
 
+        public static bool IsWhiteSpace(this Lexer.TokenType type)
+            => type switch {
+                Lexer.TokenType.NEWLINE
+                    or Lexer.TokenType.INDENT
+                    or Lexer.TokenType.DEDENT
+                    or Lexer.TokenType.EOF => true,
+                _ => false
+            };
+
         #endregion
     }
 }
