@@ -3,6 +3,7 @@
 namespace Indra.Astra {
 
     public partial class Lexer {
+
         public enum ErrorCode {
             UNKNOWN,
             UNMATCHED_DELIMITER,
