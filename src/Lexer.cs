@@ -70,11 +70,11 @@ namespace Indra.Astra {
                         #region Symbols
                         #region Brackets
                         case '(': {
-                                appendToken_StartDelimiter(TokenType.OPEN_PARENTHESIS);
+                                appendToken_startDelimiter(TokenType.OPEN_PARENTHESIS);
                                 break;
                             }
                         case ')': {
-                                if(tryAppendToken_EndDelimiter(TokenType.CLOSE_PARENTHESIS, out Failure? failure)) {
+                                if(tryAppendToken_endDelimiter(TokenType.CLOSE_PARENTHESIS, out Failure? failure)) {
                                     break;
                                 }
                                 else {
@@ -83,11 +83,11 @@ namespace Indra.Astra {
                                 }
                             }
                         case '[': {
-                                appendToken_StartDelimiter(TokenType.OPEN_BRACKET);
+                                appendToken_startDelimiter(TokenType.OPEN_BRACKET);
                                 break;
                             }
                         case ']': {
-                                if(tryAppendToken_EndDelimiter(TokenType.CLOSE_BRACKET, out Failure? failure)) {
+                                if(tryAppendToken_endDelimiter(TokenType.CLOSE_BRACKET, out Failure? failure)) {
                                     break;
                                 }
                                 else {
@@ -96,11 +96,11 @@ namespace Indra.Astra {
                                 }
                             }
                         case '{': {
-                                appendToken_StartDelimiter(TokenType.OPEN_BRACE);
+                                appendToken_startDelimiter(TokenType.OPEN_BRACE);
                                 break;
                             }
                         case '}': {
-                                if(tryAppendToken_EndDelimiter(TokenType.CLOSE_BRACE, out Failure? failure)) {
+                                if(tryAppendToken_endDelimiter(TokenType.CLOSE_BRACE, out Failure? failure)) {
                                     break;
                                 }
                                 else {
@@ -158,7 +158,7 @@ namespace Indra.Astra {
                                                 appendToken_length2(TokenType.LEFT_PLUS_ARROW);
                                             }
                                             else {
-                                                appendToken_StartDelimiter(TokenType.OPEN_ANGLE);
+                                                appendToken_startDelimiter(TokenType.OPEN_ANGLE);
                                             }
 
                                             break;
@@ -168,7 +168,7 @@ namespace Indra.Astra {
                                 break;
                             }
                         case '>': {
-                                if(tryAppendToken_EndDelimiter(TokenType.CLOSE_ANGLE, out Failure? failure)) {
+                                if(tryAppendToken_closeDelimiter(TokenType.CLOSE_ANGLE)) {
                                     break;
                                 }
                                 else if(cursor.Next is '>') {
@@ -206,37 +206,43 @@ namespace Indra.Astra {
                                     appendToken_length1(TokenType.RIGHT_CHEVRON);
                                     break;
                                 }
+                                else if(tryAppendToken_orphanDelimiter_inQuote(TokenType.CLOSE_ANGLE)) {
+                                    break;
+                                }
                                 else {
                                     appendToken_length1(TokenType.CLOSE_ANGLE);
-                                    return failure;
+                                    return fail_withError(
+                                        ErrorCode.UNMATCHED_DELIMITER,
+                                        TokenType.CLOSE_ANGLE
+                                    );
                                 }
                             }
                         #endregion
                         #region Quotes
                         case '\'': {
-                                if(tryAppendToken_EndQuote(TokenType.SINGLE_QUOTE)) {
+                                if(tryAppendToken_endQuote(TokenType.SINGLE_QUOTE)) {
                                     break;
                                 }
                                 else {
-                                    appendToken_StartDelimiter(TokenType.SINGLE_QUOTE);
+                                    appendToken_startDelimiter(TokenType.SINGLE_QUOTE);
                                     break;
                                 }
                             }
                         case '"': {
-                                if(tryAppendToken_EndQuote(TokenType.DOUBLE_QUOTE)) {
+                                if(tryAppendToken_endQuote(TokenType.DOUBLE_QUOTE)) {
                                     break;
                                 }
                                 else {
-                                    appendToken_StartDelimiter(TokenType.DOUBLE_QUOTE);
+                                    appendToken_startDelimiter(TokenType.DOUBLE_QUOTE);
                                     break;
                                 }
                             }
                         case '`': {
-                                if(tryAppendToken_EndQuote(TokenType.BACKTICK)) {
+                                if(tryAppendToken_endQuote(TokenType.BACKTICK)) {
                                     break;
                                 }
                                 else {
-                                    appendToken_StartDelimiter(TokenType.BACKTICK);
+                                    appendToken_startDelimiter(TokenType.BACKTICK);
                                     break;
                                 }
                             }
@@ -486,7 +492,7 @@ namespace Indra.Astra {
                                         appendToken_length2(TokenType.TIMES_EQUALS);
                                         break;
                                     case '/':
-                                        if(tryAppendToken_EndDelimiter(TokenType.CLOSE_BLOCK_COMMENT, out Failure? failure, 2)) {
+                                        if(tryAppendToken_endDelimiter(TokenType.CLOSE_BLOCK_COMMENT, out Failure? failure, 2)) {
                                             break;
                                         }
                                         else {
@@ -521,7 +527,7 @@ namespace Indra.Astra {
                                         appendToken_length2(TokenType.DIVISION_EQUALS);
                                         break;
                                     case '*' when cursor.Peek(2).IsWhiteSpace():
-                                        appendToken_StartDelimiter(TokenType.OPEN_BLOCK_COMMENT, 2);
+                                        appendToken_startDelimiter(TokenType.OPEN_BLOCK_COMMENT, 2);
                                         break;
                                     default:
                                         if(isValid_mathSpacing()) {
@@ -862,7 +868,7 @@ namespace Indra.Astra {
                     }
                 }
 
-                void appendToken_StartDelimiter(TokenType type, int length = 1) {
+                void appendToken_startDelimiter(TokenType type, int length = 1) {
                     Token.Open start = new(type) {
                         Position = cursor.Position,
                         Line = cursor.Line,
@@ -874,67 +880,66 @@ namespace Indra.Astra {
                     state._pushClosure(start);
                 }
 
-                bool tryAppendToken_EndQuote(TokenType type) {
+                bool tryAppendToken_closeDelimiter(TokenType type, int length = 1) {
                     if(state.Closures._tryPop(type, out Token.Open? start)) {
-                        Token.Close end = new_closeQuote();
-                        end._link(start);
-                        tokens.Add(end);
-
-                        return true;
-                    }
-                    else {
-                        if(state.Closures.OuterQuote is not null) {
-                            tokens.Add(new_closeQuote());
-                            return true;
-                        }
-                        else {
-                            return false;
-                        }
-                    }
-
-                    Token.Close new_closeQuote()
-                        => new(type) {
-                            Position = cursor.Position,
-                            Line = cursor.Line,
-                            Column = cursor.Column,
-                            Length = 1
-                        };
-                }
-
-                bool tryAppendToken_EndDelimiter(TokenType type, [NotNullWhen(false)] out Failure? failure, int length = 1) {
-                    if(state.Closures._tryPop(type, out Token.Open? start)) {
-                        Token.Close end = new_closeToken();
-                        end._link(start);
-                        tokens.Add(end);
-
-                        failure = null;
-                        return true;
-                    }
-                    else {
-                        if(state.Closures.OuterQuote is not null) {
-                            tokens.Add(new_closeToken());
-
-                            failure = null;
-                            return true;
-                        }
-                        else {
-                            failure = fail_withError(
-                                ErrorCode.UNMATCHED_DELIMITER,
-                                found: type,
-                                expected: DelimiterPairs[type]
-                            );
-
-                            return false;
-                        }
-                    }
-
-                    Token.Close new_closeToken()
-                        => new(type) {
+                        Token.Close end = new(type) {
                             Position = cursor.Position,
                             Line = cursor.Line,
                             Column = cursor.Column,
                             Length = length
                         };
+
+                        end._link(start);
+                        tokens.Add(end);
+
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+
+                bool tryAppendToken_orphanDelimiter_inQuote(TokenType type, int length = 1) {
+                    if(state.Closures.OuterQuote is not null) {
+                        tokens.Add(new(type) {
+                            Position = cursor.Position,
+                            Line = cursor.Line,
+                            Column = cursor.Column,
+                            Length = length
+                        });
+
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+
+                bool tryAppendToken_endQuote(TokenType type)
+                    => tryAppendToken_closeDelimiter(type)
+                    || tryAppendToken_orphanDelimiter_inQuote(type);
+
+                bool tryAppendToken_endDelimiter(
+                    TokenType type,
+                    [NotNullWhen(false)] out Failure? failure,
+                    int length = 1
+                ) {
+                    if(tryAppendToken_closeDelimiter(type, length)) {
+                        failure = null;
+                        return true;
+                    }
+                    else if(tryAppendToken_orphanDelimiter_inQuote(type, length)) {
+                        failure = null;
+                        return true;
+                    }
+                    else {
+                        failure = fail_withError(
+                            ErrorCode.UNMATCHED_DELIMITER,
+                            found: type
+                        );
+
+                        return false;
+                    }
                 }
 
                 bool isValid_mathSpacing()
