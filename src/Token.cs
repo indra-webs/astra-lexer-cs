@@ -3,53 +3,6 @@
 namespace Indra.Astra {
     public partial class Lexer {
         public class Token(TokenType type) {
-
-            public abstract class Delimiter(TokenType type)
-                : Token(type) {
-                [MemberNotNullWhen(true, nameof(HasMatch))]
-                public abstract Delimiter? Match { get; }
-
-                public bool HasMatch
-                    => Match is not null;
-
-                public override bool IsValid
-                    => HasMatch;
-            }
-
-            public class Open(TokenType type)
-                : Delimiter(type) {
-                [NotNullIfNotNull(nameof(Match))]
-                public new Close? Close { get; internal set; }
-
-                public override Delimiter? Match
-                    => Close;
-
-                override public string? GetExtraInfo()
-                    => !IsValid
-                        ? $"*UNCLOSED*"
-                        : null;
-            }
-
-            public class Close(TokenType type)
-                : Delimiter(type) {
-
-                [NotNullIfNotNull(nameof(Match))]
-                public new Open? Open { get; internal set; }
-
-                public override Delimiter? Match
-                    => Open;
-
-                override public string? GetExtraInfo()
-                    => !IsValid
-                        ? $"*UNOPENED*"
-                        : null;
-
-                internal void _link(Open start) {
-                    Open = start;
-                    start.Close = this;
-                }
-            }
-
             public class Incomplete(TokenType type)
                 : Token(type) {
                 public override string Name
@@ -148,7 +101,6 @@ namespace Indra.Astra {
 
         }
     }
-
     public static class LexerTokenExtensions {
 
         #region Type Extensions
@@ -188,15 +140,6 @@ namespace Indra.Astra {
                 _ => false
             };
 
-        public static bool IsComment(this Lexer.TokenType type)
-            => type switch {
-                Lexer.TokenType.EOL_SLASH_COMMENT => true,
-                Lexer.TokenType.EOL_HASH_COMMENT => true,
-                Lexer.TokenType.DOC_HASH_COMMENT => true,
-                Lexer.TokenType.OPEN_BLOCK_COMMENT => true,
-                _ => false
-            };
-
         /// <summary>
         /// Tokens that begin a sequence
         /// </summary>
@@ -212,7 +155,7 @@ namespace Indra.Astra {
             => type switch {
                 Lexer.TokenType.DASH => true,
                 Lexer.TokenType.STAR => true,
-                Lexer.TokenType.CROSS => true,
+                Lexer.TokenType.PLUS => true,
                 _ => false
             };
 
@@ -235,7 +178,6 @@ namespace Indra.Astra {
             => type switch {
                 Lexer.TokenType.WORD => true,
                 Lexer.TokenType.NUMBER => true,
-                Lexer.TokenType.HYBRID => true,
                 Lexer.TokenType.ESCAPE => true,
                 _ => false
             };

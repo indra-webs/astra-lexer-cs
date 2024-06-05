@@ -1,6 +1,10 @@
 namespace Indra.Astra {
   public partial class Lexer {
     public enum TokenType {
+      // Separators
+      COMMA,
+      COLON,
+
       // Brackets and Delimiters
       LEFT_PARENTHESIS,
       RIGHT_PARENTHESIS,
@@ -19,15 +23,13 @@ namespace Indra.Astra {
       CLOSE_BLOCK_COMMENT,
 
       // Single character symbols
-      COMMA,
-      COLON,
       SEMICOLON,
       DOT,
       HASH,
       TILDE,
       PERCENT,
       DASH,
-      CROSS,
+      PLUS,
       STAR,
       SLASH,
       QUESTION,
@@ -47,10 +49,10 @@ namespace Indra.Astra {
       DOUBLE_DASH,
       DOUBLE_PLUS,
       DOUBLE_TIMES,
-      DOUBLE_DIVISION,
+      DOUBLE_SLASH,
       DOUBLE_QUESTION,
       DOUBLE_BANG,
-      DOUBLE_AMPERSAND,
+      DOUBLE_AND,
       DOUBLE_PIPE,
       DOUBLE_RIGHT_ANGLE,
       DOUBLE_LEFT_ANGLE,
@@ -75,6 +77,9 @@ namespace Indra.Astra {
       TILDE_EQUALS,
       DIVISION_EQUALS,
       PERCENT_EQUALS,
+      AND_EQUALS,
+      PIPE_EQUALS,
+      COLON_EQUALS,
       DOT_EQUALS,
 
       // Triple character symbols
