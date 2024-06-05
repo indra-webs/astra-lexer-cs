@@ -116,9 +116,11 @@ namespace Indra.Astra {
                         }
                     } // If it's in a quote, we don't care about other mismatched delimiters within it
                     else if(DelimiterPairs[OuterQuote.Type] == close) {
-                        do {
+                        while(_stack.Count > 0 && _stack[^1] != OuterQuote) {
                             _stack.RemoveAt(_stack.Count - 1);
-                        } while(_stack.Count > 0 && _stack[^1] != OuterQuote);
+                        }
+
+                        _stack.RemoveAt(_stack.Count - 1);
                         start = OuterQuote;
                         OuterQuote = null;
 
