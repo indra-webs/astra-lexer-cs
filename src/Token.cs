@@ -155,20 +155,20 @@ namespace Indra.Astra {
 
         public static bool IsOpen(this Lexer.TokenType type)
             => type switch {
-                Lexer.TokenType.OPEN_PARENTHESIS => true,
-                Lexer.TokenType.OPEN_BRACKET => true,
-                Lexer.TokenType.OPEN_BRACE => true,
-                Lexer.TokenType.OPEN_ANGLE => true,
+                Lexer.TokenType.LEFT_PARENTHESIS => true,
+                Lexer.TokenType.LEFT_BRACKET => true,
+                Lexer.TokenType.LEFT_BRACE => true,
+                Lexer.TokenType.LEFT_ANGLE => true,
                 Lexer.TokenType.OPEN_BLOCK_COMMENT => true,
                 _ => false
             };
 
         public static bool IsClose(this Lexer.TokenType type)
             => type switch {
-                Lexer.TokenType.CLOSE_PARENTHESIS => true,
-                Lexer.TokenType.CLOSE_BRACKET => true,
-                Lexer.TokenType.CLOSE_BRACE => true,
-                Lexer.TokenType.CLOSE_ANGLE => true,
+                Lexer.TokenType.RIGHT_PARENTHESIS => true,
+                Lexer.TokenType.RIGHT_BRACKET => true,
+                Lexer.TokenType.RIGHT_BRACE => true,
+                Lexer.TokenType.RIGHT_ANGLE => true,
                 Lexer.TokenType.CLOSE_BLOCK_COMMENT => true,
                 _ => false
             };

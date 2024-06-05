@@ -15,14 +15,14 @@ namespace Indra.Astra {
 
         public static readonly IReadOnlyDictionary<TokenType, TokenType> DelimiterPairs
             = new Dictionary<TokenType, TokenType> {
-                { TokenType.OPEN_PARENTHESIS, TokenType.CLOSE_PARENTHESIS },
-                { TokenType.CLOSE_PARENTHESIS, TokenType.OPEN_PARENTHESIS },
-                { TokenType.OPEN_BRACKET, TokenType.CLOSE_BRACKET },
-                { TokenType.CLOSE_BRACKET, TokenType.OPEN_BRACKET },
-                { TokenType.OPEN_BRACE, TokenType.CLOSE_BRACE },
-                { TokenType.CLOSE_BRACE, TokenType.OPEN_BRACE },
-                { TokenType.OPEN_ANGLE, TokenType.CLOSE_ANGLE },
-                { TokenType.CLOSE_ANGLE, TokenType.OPEN_ANGLE },
+                { TokenType.LEFT_PARENTHESIS, TokenType.RIGHT_PARENTHESIS },
+                { TokenType.RIGHT_PARENTHESIS, TokenType.LEFT_PARENTHESIS },
+                { TokenType.LEFT_BRACKET, TokenType.RIGHT_BRACKET },
+                { TokenType.RIGHT_BRACKET, TokenType.LEFT_BRACKET },
+                { TokenType.LEFT_BRACE, TokenType.RIGHT_BRACE },
+                { TokenType.RIGHT_BRACE, TokenType.LEFT_BRACE },
+                { TokenType.LEFT_ANGLE, TokenType.RIGHT_ANGLE },
+                { TokenType.RIGHT_ANGLE, TokenType.LEFT_ANGLE },
                 { TokenType.SINGLE_QUOTE, TokenType.SINGLE_QUOTE },
                 { TokenType.DOUBLE_QUOTE, TokenType.DOUBLE_QUOTE },
                 { TokenType.BACKTICK, TokenType.BACKTICK },
@@ -70,41 +70,41 @@ namespace Indra.Astra {
                         #region Symbols
                         #region Brackets
                         case '(': {
-                                appendToken_startDelimiter(TokenType.OPEN_PARENTHESIS);
+                                appendToken_startDelimiter(TokenType.LEFT_PARENTHESIS);
                                 break;
                             }
                         case ')': {
-                                if(tryAppendToken_endDelimiter(TokenType.CLOSE_PARENTHESIS, out Failure? failure)) {
+                                if(tryAppendToken_endDelimiter(TokenType.RIGHT_PARENTHESIS, out Failure? failure)) {
                                     break;
                                 }
                                 else {
-                                    appendToken_length1(TokenType.CLOSE_PARENTHESIS);
+                                    appendToken_length1(TokenType.RIGHT_PARENTHESIS);
                                     return failure;
                                 }
                             }
                         case '[': {
-                                appendToken_startDelimiter(TokenType.OPEN_BRACKET);
+                                appendToken_startDelimiter(TokenType.LEFT_BRACKET);
                                 break;
                             }
                         case ']': {
-                                if(tryAppendToken_endDelimiter(TokenType.CLOSE_BRACKET, out Failure? failure)) {
+                                if(tryAppendToken_endDelimiter(TokenType.RIGHT_BRACKET, out Failure? failure)) {
                                     break;
                                 }
                                 else {
-                                    appendToken_length1(TokenType.CLOSE_BRACKET);
+                                    appendToken_length1(TokenType.RIGHT_BRACKET);
                                     return failure;
                                 }
                             }
                         case '{': {
-                                appendToken_startDelimiter(TokenType.OPEN_BRACE);
+                                appendToken_startDelimiter(TokenType.LEFT_BRACE);
                                 break;
                             }
                         case '}': {
-                                if(tryAppendToken_endDelimiter(TokenType.CLOSE_BRACE, out Failure? failure)) {
+                                if(tryAppendToken_endDelimiter(TokenType.RIGHT_BRACE, out Failure? failure)) {
                                     break;
                                 }
                                 else {
-                                    appendToken_length1(TokenType.CLOSE_BRACE);
+                                    appendToken_length1(TokenType.RIGHT_BRACE);
                                     return failure;
                                 }
                             }
@@ -158,7 +158,7 @@ namespace Indra.Astra {
                                                 appendToken_length2(TokenType.LEFT_PLUS_ARROW);
                                             }
                                             else {
-                                                appendToken_startDelimiter(TokenType.OPEN_ANGLE);
+                                                appendToken_startDelimiter(TokenType.LEFT_ANGLE);
                                             }
 
                                             break;
@@ -168,7 +168,7 @@ namespace Indra.Astra {
                                 break;
                             }
                         case '>': {
-                                if(tryAppendToken_closeDelimiter(TokenType.CLOSE_ANGLE)) {
+                                if(tryAppendToken_closeDelimiter(TokenType.RIGHT_ANGLE)) {
                                     break;
                                 }
                                 else if(cursor.Next is '>') {
@@ -184,7 +184,7 @@ namespace Indra.Astra {
                                     break;
                                 }
                                 else if(cursor.Next is '=') {
-                                    appendToken_length2(TokenType.GREATER_OR_EQUALS);
+                                    appendToken_length2(TokenType.GREATER_EQUALS);
                                     break;
                                 }
                                 else if(cursor.Previous.IsWhiteSpaceOrNull()) {
@@ -206,14 +206,14 @@ namespace Indra.Astra {
                                     appendToken_length1(TokenType.RIGHT_CHEVRON);
                                     break;
                                 }
-                                else if(tryAppendToken_orphanDelimiter_inQuote(TokenType.CLOSE_ANGLE)) {
+                                else if(tryAppendToken_orphanDelimiter_inQuote(TokenType.RIGHT_ANGLE)) {
                                     break;
                                 }
                                 else {
-                                    appendToken_length1(TokenType.CLOSE_ANGLE);
+                                    appendToken_length1(TokenType.RIGHT_ANGLE);
                                     return fail_withError(
                                         ErrorCode.UNMATCHED_DELIMITER,
-                                        TokenType.CLOSE_ANGLE
+                                        TokenType.RIGHT_ANGLE
                                     );
                                 }
                             }
@@ -254,7 +254,7 @@ namespace Indra.Astra {
                                 else if(cursor.Next is ':') {
                                     switch(cursor.Peek(2)) {
                                         case ':': {
-                                                appendToken_length3(TokenType.TRIPLE_COLON_ASSIGNER);
+                                                appendToken_length3(TokenType.TRIPLE_COLON);
                                                 break;
                                             }
                                         case '=': {
@@ -273,7 +273,7 @@ namespace Indra.Astra {
                                             }
                                         default: {
                                                 if(cursor.Peek(2).IsWhiteSpace()) {
-                                                    appendToken_length2(TokenType.DOUBLE_COLON_ASSIGNER);
+                                                    appendToken_length2(TokenType.DOUBLE_COLON);
                                                 }
                                                 else {
                                                     appendToken_length2(TokenType.DOUBLE_COLON_PREFIX);
@@ -297,7 +297,7 @@ namespace Indra.Astra {
                                     }
                                 }
                                 else {
-                                    appendToken_length1(TokenType.COLON_CALLER);
+                                    appendToken_length1(TokenType.COLON);
                                 }
 
                                 break;
@@ -593,7 +593,7 @@ namespace Indra.Astra {
                                             break;
                                         }
                                     case '<': {
-                                            appendToken_length2(TokenType.EQUALS_OR_LESS);
+                                            appendToken_length2(TokenType.EQUALS_LESS);
                                             break;
                                         }
                                     case ':': {
@@ -619,7 +619,7 @@ namespace Indra.Astra {
                                             break;
                                         }
                                     default: {
-                                            appendToken_length1(TokenType.AMPERSAND);
+                                            appendToken_length1(TokenType.AND);
                                             break;
                                         }
                                 }
