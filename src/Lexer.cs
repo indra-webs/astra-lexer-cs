@@ -70,27 +70,27 @@ namespace Indra.Astra {
                         #region Symbols
                         #region Brackets
                         case '(': {
-                                appendToken_length1(IToken.LEFT_PARENTHESIS);
+                                appendToken_length1_ofType<LeftParenthesis>();
                                 break;
                             }
                         case ')': {
-                                appendToken_length1(IToken.RIGHT_PARENTHESIS);
+                                appendToken_length1_ofType<RightParenthesis>();
                                 break;
                             }
                         case '[': {
-                                appendToken_length1(IToken.LEFT_BRACKET);
+                                appendToken_length1_ofType<LeftBracket>();
                                 break;
                             }
                         case ']': {
-                                appendToken_length1(IToken.RIGHT_BRACKET);
+                                appendToken_length1_ofType<RightBracket>();
                                 break;
                             }
                         case '{': {
-                                appendToken_length1(IToken.LEFT_BRACE);
+                                appendToken_length1_ofType<LeftBrace>();
                                 break;
                             }
                         case '}': {
-                                appendToken_length1(IToken.RIGHT_BRACE);
+                                appendToken_length1_ofType<RightBrace>();
                                 break;
                             }
                         case '<': {
@@ -547,8 +547,8 @@ namespace Indra.Astra {
 
                 } while(cursor.Move(1));
 
-                tokens.Add(new(IToken.EOF) {
-                    Position = cursor.Position + 1,
+                tokens.Add(new Token.OfType<EndOfFile> {
+                    Index = cursor.Position + 1,
                     Line = cursor.Line,
                     Column = cursor.Column + 1,
                     Length = 0
@@ -558,21 +558,7 @@ namespace Indra.Astra {
 
                 #region Local Helper Functions
 
-                void appendToken_newLine(int length) {
-                    appendToken_lengthOf(length, IToken.NEWLINE, true);
-                    state._endLine();
-                }
-
-                void appendToken_length1(IToken type)
-                    => appendToken_lengthOf(1, type, false);
-
-                void appendToken_length2(IToken type)
-                    => appendToken_lengthOf(2, type, true);
-
-                void appendToken_length3(IToken type)
-                    => appendToken_lengthOf(3, type, true);
-
-                void appendToken_lengthOf(int length, IToken type, bool skip = true) {
+                void appendToken(IToken type, int length, bool skip = true) {
                     tokens.Add(new_token(type, length));
 
                     if(skip) {
@@ -580,7 +566,30 @@ namespace Indra.Astra {
                     }
                 }
 
-                void appendToken_quote(IToken type) {
+                void appendToken_ofType<T>(int length, bool skip = true)
+                    where T : TokenType<T>
+                    => appendToken(Types.Get<T>(), length, skip);
+
+                void appendToken_length1_ofType<T>()
+                    where T : TokenType<T>
+                    => appendToken_ofType<T>(1, false);
+
+                void appendToken_length2_ofType<T>()
+                    where T : TokenType<T>
+                    => appendToken_ofType<T>(2, true);
+
+                void appendToken_length3_ofType<T>()
+                    where T : TokenType<T>
+                    => appendToken_ofType<T>(3, true);
+
+                void appendToken_newLine(int length) {
+                    appendToken_ofType<NewLine>(length);
+                    state._endLine();
+                }
+
+                void appendToken_quote<TQuote>()
+                    where TQuote : TokenType<TQuote>, IQuote {
+                    TQuote type = Types.Get<TQuote>();
                     Token quote = new_token(type);
                     if(state.CurrentQuote is null) {
                         state.CurrentQuote = quote;
@@ -592,18 +601,20 @@ namespace Indra.Astra {
                     tokens.Add(quote);
                 }
 
-                bool tryAppendToken_length2(IToken type)
-                    => tryAppendToken(2, type);
+                bool tryAppendToken_length2<T>()
+                    where T : TokenType<T>
+                    => tryAppendToken<T>(2);
 
-                bool tryAppendToken(int length, IToken type) {
-                    Token token = new_token(type, length);
+                bool tryAppendToken<T>(int length)
+                    where T : TokenType<T> {
+                    Token token = new_token<T>(length);
                     if(cursor.Move(length - 1)) {
                         tokens.Add(token);
                         return true;
                     }
                     else {
-                        tokens.Add(new Token.Incomplete(type) {
-                            Position = cursor.Position,
+                        tokens.Add(new Token.Incomplete(Types.Get<T>()) {
+                            Index = cursor.Position,
                             Line = cursor.Line,
                             Column = cursor.Column,
                             Length = cursor.Buffer
@@ -642,9 +653,10 @@ namespace Indra.Astra {
 
             #region Local Helper Functions
 
-            Token new_token(IToken type, int length = 1)
-                => new(type) {
-                    Position = cursor.Position,
+            Token new_token<T>(int length = 1)
+                where T : TokenType<T>
+                => new Token.OfType<T> {
+                    Index = cursor.Position,
                     Line = cursor.Line,
                     Column = cursor.Column,
                     Length = length

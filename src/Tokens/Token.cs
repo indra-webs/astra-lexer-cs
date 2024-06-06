@@ -1,46 +1,95 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
 namespace Indra.Astra.Tokens {
-    public class Token(IToken type) {
 
-        public interface IType {
-            public string Name { get; }
+    /// <summary>
+    ///   An individual processed token from the lexer with location and Token Type data attached.
+    /// </summary>
+    /// <remarks>
+    ///   <term><b>See Also</b></term><related><list type="bullet">
+    ///     <item>
+    ///       <term><seealso href="IToken">IToken</seealso></term>
+    ///       <description><inheritdoc cref="IToken" path="/summary"/></description>
+    ///     </item>
+    ///     <item>
+    ///       <term><seealso href="TokenType">TokenType</seealso></term>
+    ///       <description><inheritdoc cref="TokenType" path="/summary"/></description>
+    ///     </item>
+    ///     <item>
+    ///       <term><seealso href="IToken{TSelf}">IToken&lt;&gt;</seealso></term>
+    ///       <description><inheritdoc cref="IToken{TSelf}" path="/summary"/></description>
+    ///     </item>
+    ///     <item>
+    ///       <term><seealso href="TokenType{TSelf}">TokenType&lt;&gt;</seealso></term>
+    ///       <description><inheritdoc cref="TokenType{TSelf}" path="/summary"/></description>
+    ///     </item>
+    ///   </list></related>
+    /// </remarks>
+    /// <param name="type">The <see cref="TokenType"/> of the token.</param>
+    public partial class Token(TokenType type) {
+
+        /// <summary>
+        /// A <see cref="Token"/> with a specific <see cref="TokenType"/>.
+        /// </summary>
+        public class OfType<T> : Token
+            where T : TokenType<T> {
+            public OfType()
+                : base(Types.Get<T>()) { }
         }
 
-        public class Incomplete(Tokens.IToken type)
-            : Token(type) {
-            public override string Name
-                => $"!{base.Name}";
+        /// <summary>
+        /// What kind of token this is.
+        /// </summary>
+        public TokenType Type { get; } = type;
 
-            override public bool IsValid
-                => false;
+        /// <summary>
+        /// The index of the start of this token in the source text. (inclusive if length > 0)
+        /// </summary>
+        public required int Index { get; init; }
 
-            override public string? GetExtraInfo()
-                => $"*INCOMPLETE*";
-        }
-
-        public IToken Type { get; }
-            = type;
-
-        public required int Position { get; init; }
-
+        /// <summary>
+        /// The line number of this token in the source text.
+        /// </summary>
         public required int Line { get; init; }
 
+        /// <summary>
+        /// The column number of the start of this token in the source text.
+        /// </summary>
         public required int Column { get; init; }
 
+        /// <summary>
+        /// The length of this token in the source text.
+        /// </summary>
         public required int Length { get; init; }
 
+        /// <summary>
+        /// Whether this token is valid.
+        /// </summary>
         public virtual bool IsValid
             => true;
 
+        /// <summary>
+        /// The name of the token type.
+        /// </summary>
         public virtual string Name
             => Type.Name;
 
+        /// <inheritdoc cref="Index"/>
         public int Start
-            => Position;
+            => Index;
 
+        /// <summary>
+        /// The index of the end of this token in the source text. (always exclusive)
+        /// </summary>
         public int End
-            => Position + Length;
+            => Index + Length;
+
+        /// <summary>
+        /// The range of this token in the source text.
+        /// </summary>
+        /// <returns></returns>
+        public Range Range
+            => Index..(Index + Length);
 
         public sealed override string ToString()
             => ToString(default!);
@@ -71,23 +120,23 @@ namespace Indra.Astra.Tokens {
         }
 
         public string GetLocationInfo()
-            => $"({Line}, {Column}) [{Position}{(
+            => $"({Line}, {Column}) [{Index}{(
                 Length > 0
-                    ? $"..{Position + Length}]{"{"}{Length}{"}"}"
+                    ? $"..{Index + Length}]{"{"}{Length}{"}"}"
                     : $"]")}";
 
         public virtual string GetSourceText([NotNull] string source)
-            => Type == Tokens.IToken.EOF
+            => Type is EndOfFile
                 ? "\\EOF"
-                : Type == Tokens.IToken.NEWLINE
+                : Type is NewLine
                     ? "\\n"
-                    : Type == Tokens.IToken.INDENT
-                        ? source[Position] == '\t'
+                    : Type is Indent
+                        ? source[Index] is '\t'
                             ? "\\t"
                             : "\\s"
-                        : Type == Tokens.IToken.DEDENT
+                        : Type is Dedent
                             ? "\\b"
-                            : source[Position..(Position + Length)];
+                            : source[Range];
 
         public virtual string? GetExtraInfo()
             => null;
