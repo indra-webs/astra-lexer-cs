@@ -1,5 +1,7 @@
 ﻿using System.Text;
 
+using Indra.Astra.Tokens;
+
 namespace Indra.Astra {
 
     public partial class Lexer {
@@ -15,7 +17,7 @@ namespace Indra.Astra {
             int Position,
             int Line,
             int Column,
-            TokenType? Token = null,
+            IToken? Token = null,
             object? Data = null,
             string? Summary = null,
             string? Found = null,

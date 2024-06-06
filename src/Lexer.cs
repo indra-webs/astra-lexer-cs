@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
+using Indra.Astra.Tokens;
+
 using Meep.Tech.Data;
 using Meep.Tech.Text;
 
@@ -68,27 +70,27 @@ namespace Indra.Astra {
                         #region Symbols
                         #region Brackets
                         case '(': {
-                                appendToken_length1(TokenType.LEFT_PARENTHESIS);
+                                appendToken_length1(IToken.LEFT_PARENTHESIS);
                                 break;
                             }
                         case ')': {
-                                appendToken_length1(TokenType.RIGHT_PARENTHESIS);
+                                appendToken_length1(IToken.RIGHT_PARENTHESIS);
                                 break;
                             }
                         case '[': {
-                                appendToken_length1(TokenType.LEFT_BRACKET);
+                                appendToken_length1(IToken.LEFT_BRACKET);
                                 break;
                             }
                         case ']': {
-                                appendToken_length1(TokenType.RIGHT_BRACKET);
+                                appendToken_length1(IToken.RIGHT_BRACKET);
                                 break;
                             }
                         case '{': {
-                                appendToken_length1(TokenType.LEFT_BRACE);
+                                appendToken_length1(IToken.LEFT_BRACE);
                                 break;
                             }
                         case '}': {
-                                appendToken_length1(TokenType.RIGHT_BRACE);
+                                appendToken_length1(IToken.RIGHT_BRACE);
                                 break;
                             }
                         case '<': {
@@ -96,11 +98,11 @@ namespace Indra.Astra {
                                     case '<': {
                                             switch(cursor.Peek(2)) {
                                                 case '<': {
-                                                        appendToken_length3(TokenType.TRIPLE_LEFT_ANGLE);
+                                                        appendToken_length3(IToken.TRIPLE_LEFT_ANGLE);
                                                         break;
                                                     }
                                                 default: {
-                                                        appendToken_length2(TokenType.DOUBLE_LEFT_ANGLE);
+                                                        appendToken_length2(IToken.DOUBLE_LEFT_ANGLE);
                                                         break;
                                                     }
                                             }
@@ -108,23 +110,23 @@ namespace Indra.Astra {
                                             break;
                                         }
                                     case '=': {
-                                            appendToken_length2(TokenType.LEFT_EQUALS_ARROW);
+                                            appendToken_length2(IToken.LEFT_EQUALS_ARROW);
                                             break;
                                         }
                                     case '-': {
-                                            appendToken_length2(TokenType.LEFT_DASH_ARROW);
+                                            appendToken_length2(IToken.LEFT_DASH_ARROW);
                                             break;
                                         }
                                     case '~': {
-                                            appendToken_length2(TokenType.LEFT_TILDE_ARROW);
+                                            appendToken_length2(IToken.LEFT_TILDE_ARROW);
                                             break;
                                         }
                                     case '+': {
-                                            appendToken_length2(TokenType.LEFT_PLUS_ARROW);
+                                            appendToken_length2(IToken.LEFT_PLUS_ARROW);
                                             break;
                                         }
                                     default: {
-                                            appendToken_length1(TokenType.LEFT_ANGLE);
+                                            appendToken_length1(IToken.LEFT_ANGLE);
                                             break;
                                         }
                                 }
@@ -135,36 +137,36 @@ namespace Indra.Astra {
                                 if(cursor.Next is '>') {
                                     switch(cursor.Peek(2)) {
                                         case '>':
-                                            appendToken_lengthOf(3, TokenType.TRIPLE_RIGHT_ANGLE, true);
+                                            appendToken_lengthOf(3, IToken.TRIPLE_RIGHT_ANGLE, true);
                                             break;
                                         default:
-                                            appendToken_length2(TokenType.DOUBLE_RIGHT_ANGLE);
+                                            appendToken_length2(IToken.DOUBLE_RIGHT_ANGLE);
                                             break;
                                     }
 
                                     break;
                                 }
                                 else if(cursor.Next is '=') {
-                                    appendToken_length2(TokenType.GREATER_EQUALS);
+                                    appendToken_length2(IToken.GREATER_EQUALS);
                                     break;
                                 }
                                 else {
-                                    appendToken_length1(TokenType.RIGHT_ANGLE);
+                                    appendToken_length1(IToken.RIGHT_ANGLE);
                                     break;
                                 }
                             }
                         #endregion
                         #region Quotes
                         case '\'': {
-                                appendToken_quote(TokenType.SINGLE_QUOTE);
+                                appendToken_quote(IToken.SINGLE_QUOTE);
                                 break;
                             }
                         case '"': {
-                                appendToken_quote(TokenType.DOUBLE_QUOTE);
+                                appendToken_quote(IToken.DOUBLE_QUOTE);
                                 break;
                             }
                         case '`': {
-                                appendToken_quote(TokenType.BACKTICK);
+                                appendToken_quote(IToken.BACKTICK);
                                 break;
                             }
                         #endregion
@@ -173,11 +175,11 @@ namespace Indra.Astra {
                                     case ':': {
                                             switch(cursor.Peek(2)) {
                                                 case ':': {
-                                                        appendToken_length3(TokenType.TRIPLE_COLON);
+                                                        appendToken_length3(IToken.TRIPLE_COLON);
                                                         break;
                                                     }
                                                 default: {
-                                                        appendToken_length2(TokenType.DOUBLE_COLON);
+                                                        appendToken_length2(IToken.DOUBLE_COLON);
                                                         break;
                                                     }
                                             }
@@ -185,11 +187,11 @@ namespace Indra.Astra {
                                             break;
                                         }
                                     case '=': {
-                                            appendToken_length2(TokenType.COLON_EQUALS);
+                                            appendToken_length2(IToken.COLON_EQUALS);
                                             break;
                                         }
                                     default: {
-                                            appendToken_length1(TokenType.COLON);
+                                            appendToken_length1(IToken.COLON);
                                             break;
                                         }
                                 }
@@ -201,11 +203,11 @@ namespace Indra.Astra {
                                     case '.': {
                                             switch(cursor.Peek(2)) {
                                                 case '.': {
-                                                        appendToken_length3(TokenType.TRIPLE_DOT);
+                                                        appendToken_length3(IToken.TRIPLE_DOT);
                                                         break;
                                                     }
                                                 default: {
-                                                        appendToken_length2(TokenType.DOUBLE_DOT);
+                                                        appendToken_length2(IToken.DOUBLE_DOT);
                                                         break;
                                                     }
                                             }
@@ -213,11 +215,11 @@ namespace Indra.Astra {
                                             break;
                                         }
                                     case '=': {
-                                            appendToken_length2(TokenType.DOT_EQUALS);
+                                            appendToken_length2(IToken.DOT_EQUALS);
                                             break;
                                         }
                                     default: {
-                                            appendToken_length1(TokenType.DOT);
+                                            appendToken_length1(IToken.DOT);
                                             break;
                                         }
                                 }
@@ -229,11 +231,11 @@ namespace Indra.Astra {
                                     case '#': {
                                             switch(cursor.Peek(2)) {
                                                 case '=': {
-                                                        appendToken_length3(TokenType.DOUBLE_HASH_EQUALS);
+                                                        appendToken_length3(IToken.DOUBLE_HASH_EQUALS);
                                                         break;
                                                     }
                                                 default: {
-                                                        appendToken_length2(TokenType.DOUBLE_HASH);
+                                                        appendToken_length2(IToken.DOUBLE_HASH);
                                                         break;
                                                     }
                                             }
@@ -241,11 +243,11 @@ namespace Indra.Astra {
                                             break;
                                         }
                                     case '=': {
-                                            appendToken_length2(TokenType.HASH_EQUALS);
+                                            appendToken_length2(IToken.HASH_EQUALS);
                                             break;
                                         }
                                     default: {
-                                            appendToken_length1(TokenType.HASH);
+                                            appendToken_length1(IToken.HASH);
                                             break;
                                         }
                                 }
@@ -255,19 +257,19 @@ namespace Indra.Astra {
                         case '+': {
                                 switch(cursor.Next) {
                                     case '+': {
-                                            appendToken_length2(TokenType.DOUBLE_PLUS);
+                                            appendToken_length2(IToken.DOUBLE_PLUS);
                                             break;
                                         }
                                     case '=': {
-                                            appendToken_length2(TokenType.PLUS_EQUALS);
+                                            appendToken_length2(IToken.PLUS_EQUALS);
                                             break;
                                         }
                                     case '>': {
-                                            appendToken_length2(TokenType.RIGHT_PLUS_ARROW);
+                                            appendToken_length2(IToken.RIGHT_PLUS_ARROW);
                                             break;
                                         }
                                     default: {
-                                            appendToken_length1(TokenType.PLUS);
+                                            appendToken_length1(IToken.PLUS);
                                             break;
                                         }
                                 }
@@ -277,19 +279,19 @@ namespace Indra.Astra {
                         case '-': {
                                 switch(cursor.Next) {
                                     case '-': {
-                                            appendToken_length2(TokenType.DOUBLE_DASH);
+                                            appendToken_length2(IToken.DOUBLE_DASH);
                                             break;
                                         }
                                     case '=': {
-                                            appendToken_length2(TokenType.MINUS_EQUALS);
+                                            appendToken_length2(IToken.MINUS_EQUALS);
                                             break;
                                         }
                                     case '>': {
-                                            appendToken_length2(TokenType.RIGHT_DASH_ARROW);
+                                            appendToken_length2(IToken.RIGHT_DASH_ARROW);
                                             break;
                                         }
                                     default: {
-                                            appendToken_length1(TokenType.DASH);
+                                            appendToken_length1(IToken.DASH);
                                             break;
                                         }
                                 }
@@ -299,20 +301,20 @@ namespace Indra.Astra {
                         case '*': {
                                 switch(cursor.Next) {
                                     case '*': {
-                                            appendToken_length2(TokenType.DOUBLE_TIMES);
+                                            appendToken_length2(IToken.DOUBLE_TIMES);
                                             break;
                                         }
                                     case '=': {
-                                            appendToken_length2(TokenType.TIMES_EQUALS);
+                                            appendToken_length2(IToken.TIMES_EQUALS);
                                             break;
                                         }
                                     case '/' when state.InCommentBlock: {
-                                            appendToken_length2(TokenType.CLOSE_BLOCK_COMMENT);
+                                            appendToken_length2(IToken.CLOSE_BLOCK_COMMENT);
                                             state.InCommentBlock = false;
                                             break;
                                         }
                                     default: {
-                                            appendToken_length1(TokenType.STAR);
+                                            appendToken_length1(IToken.STAR);
                                             break;
                                         }
                                 }
@@ -322,20 +324,20 @@ namespace Indra.Astra {
                         case '/': {
                                 switch(cursor.Next) {
                                     case '/': {
-                                            appendToken_length2(TokenType.DOUBLE_SLASH);
+                                            appendToken_length2(IToken.DOUBLE_SLASH);
                                             break;
                                         }
                                     case '=': {
-                                            appendToken_length2(TokenType.DIVISION_EQUALS);
+                                            appendToken_length2(IToken.DIVISION_EQUALS);
                                             break;
                                         }
                                     case '*' when cursor.Previous.IsWhiteSpaceOrNull() && cursor.Peek(2).IsWhiteSpaceOrNull(): {
-                                            appendToken_length2(TokenType.OPEN_BLOCK_COMMENT);
+                                            appendToken_length2(IToken.OPEN_BLOCK_COMMENT);
                                             state.InCommentBlock = true;
                                             break;
                                         }
                                     default: {
-                                            appendToken_length1(TokenType.SLASH);
+                                            appendToken_length1(IToken.SLASH);
                                             break;
                                         }
                                 }
@@ -345,19 +347,19 @@ namespace Indra.Astra {
                         case '~': {
                                 switch(cursor.Next) {
                                     case '~': {
-                                            appendToken_length2(TokenType.DOUBLE_TILDE);
+                                            appendToken_length2(IToken.DOUBLE_TILDE);
                                             break;
                                         }
                                     case '>': {
-                                            appendToken_length2(TokenType.RIGHT_TILDE_ARROW);
+                                            appendToken_length2(IToken.RIGHT_TILDE_ARROW);
                                             break;
                                         }
                                     case '=': {
-                                            appendToken_length2(TokenType.TILDE_EQUALS);
+                                            appendToken_length2(IToken.TILDE_EQUALS);
                                             break;
                                         }
                                     default: {
-                                            appendToken_length1(TokenType.TILDE);
+                                            appendToken_length1(IToken.TILDE);
                                             break;
                                         }
                                 }
@@ -367,15 +369,15 @@ namespace Indra.Astra {
                         case '%': {
                                 switch(cursor.Next) {
                                     case '%': {
-                                            appendToken_length2(TokenType.DOUBLE_PERCENT);
+                                            appendToken_length2(IToken.DOUBLE_PERCENT);
                                             break;
                                         }
                                     case '=': {
-                                            appendToken_length2(TokenType.PERCENT_EQUALS);
+                                            appendToken_length2(IToken.PERCENT_EQUALS);
                                             break;
                                         }
                                     default: {
-                                            appendToken_length1(TokenType.PERCENT);
+                                            appendToken_length1(IToken.PERCENT);
                                             break;
                                         }
                                 }
@@ -385,19 +387,19 @@ namespace Indra.Astra {
                         case '=': {
                                 switch(cursor.Next) {
                                     case '=': {
-                                            appendToken_length2(TokenType.DOUBLE_EQUALS);
+                                            appendToken_length2(IToken.DOUBLE_EQUALS);
                                             break;
                                         }
                                     case '>': {
-                                            appendToken_length2(TokenType.RIGHT_EQUALS_ARROW);
+                                            appendToken_length2(IToken.RIGHT_EQUALS_ARROW);
                                             break;
                                         }
                                     case '<': {
-                                            appendToken_length2(TokenType.EQUALS_LESS);
+                                            appendToken_length2(IToken.EQUALS_LESS);
                                             break;
                                         }
                                     default: {
-                                            appendToken_length1(TokenType.EQUALS);
+                                            appendToken_length1(IToken.EQUALS);
                                             break;
                                         }
                                 }
@@ -407,15 +409,15 @@ namespace Indra.Astra {
                         case '&': {
                                 switch(cursor.Next) {
                                     case '&': {
-                                            appendToken_length2(TokenType.DOUBLE_AND);
+                                            appendToken_length2(IToken.DOUBLE_AND);
                                             break;
                                         }
                                     case '=': {
-                                            appendToken_length2(TokenType.AND_EQUALS);
+                                            appendToken_length2(IToken.AND_EQUALS);
                                             break;
                                         }
                                     default: {
-                                            appendToken_length1(TokenType.AND);
+                                            appendToken_length1(IToken.AND);
                                             break;
                                         }
                                 }
@@ -425,15 +427,15 @@ namespace Indra.Astra {
                         case '|': {
                                 switch(cursor.Next) {
                                     case '|': {
-                                            appendToken_length2(TokenType.DOUBLE_PIPE);
+                                            appendToken_length2(IToken.DOUBLE_PIPE);
                                             break;
                                         }
                                     case '=': {
-                                            appendToken_length2(TokenType.PIPE_EQUALS);
+                                            appendToken_length2(IToken.PIPE_EQUALS);
                                             break;
                                         }
                                     default: {
-                                            appendToken_length1(TokenType.PIPE);
+                                            appendToken_length1(IToken.PIPE);
                                             break;
                                         }
                                 }
@@ -445,11 +447,11 @@ namespace Indra.Astra {
                                     case '?': {
                                             switch(cursor.Peek(2)) {
                                                 case '=': {
-                                                        appendToken_length3(TokenType.DOUBLE_QUESTION_EQUALS);
+                                                        appendToken_length3(IToken.DOUBLE_QUESTION_EQUALS);
                                                         break;
                                                     }
                                                 default: {
-                                                        appendToken_length2(TokenType.DOUBLE_QUESTION);
+                                                        appendToken_length2(IToken.DOUBLE_QUESTION);
                                                         break;
                                                     }
                                             }
@@ -457,11 +459,11 @@ namespace Indra.Astra {
                                             break;
                                         }
                                     case '=': {
-                                            appendToken_length2(TokenType.QUESTION_EQUALS);
+                                            appendToken_length2(IToken.QUESTION_EQUALS);
                                             break;
                                         }
                                     default: {
-                                            appendToken_length1(TokenType.QUESTION);
+                                            appendToken_length1(IToken.QUESTION);
                                             break;
                                         }
                                 }
@@ -473,11 +475,11 @@ namespace Indra.Astra {
                                     case '!': {
                                             switch(cursor.Peek(2)) {
                                                 case '=': {
-                                                        appendToken_length3(TokenType.DOUBLE_BANG_EQUALS);
+                                                        appendToken_length3(IToken.DOUBLE_BANG_EQUALS);
                                                         break;
                                                     }
                                                 default: {
-                                                        appendToken_length2(TokenType.DOUBLE_BANG);
+                                                        appendToken_length2(IToken.DOUBLE_BANG);
                                                         break;
                                                     }
                                             }
@@ -485,11 +487,11 @@ namespace Indra.Astra {
                                             break;
                                         }
                                     case '=': {
-                                            appendToken_length2(TokenType.BANG_EQUALS);
+                                            appendToken_length2(IToken.BANG_EQUALS);
                                             break;
                                         }
                                     default: {
-                                            appendToken_length1(TokenType.BANG);
+                                            appendToken_length1(IToken.BANG);
                                             break;
                                         }
                                 }
@@ -497,17 +499,17 @@ namespace Indra.Astra {
                                 break;
                             }
                         case ',': {
-                                appendToken_length1(TokenType.COMMA);
+                                appendToken_length1(IToken.COMMA);
                                 break;
                             }
                         case ';': {
                                 switch(cursor.Next) {
                                     case ';': {
-                                            appendToken_length2(TokenType.DOUBLE_SEMICOLON);
+                                            appendToken_length2(IToken.DOUBLE_SEMICOLON);
                                             break;
                                         }
                                     default: {
-                                            appendToken_length1(TokenType.SEMICOLON);
+                                            appendToken_length1(IToken.SEMICOLON);
                                             break;
                                         }
                                 }
@@ -519,13 +521,13 @@ namespace Indra.Astra {
                         // escape sequences via backslash
                         case '\\': {
                                 if(cursor.ReadNext("eof") || cursor.ReadNext("EOF")) {
-                                    appendToken_lengthOf(4, TokenType.ESCAPE, false);
+                                    appendToken_lengthOf(4, IToken.ESCAPE, false);
                                 }
                                 else {
-                                    if(!tryAppendToken_length2(TokenType.ESCAPE)) {
+                                    if(!tryAppendToken_length2(IToken.ESCAPE)) {
                                         return fail_withError(
                                             ErrorCode.UNEXPECTED_EOF,
-                                            TokenType.ESCAPE,
+                                            IToken.ESCAPE,
                                             position: cursor.Position + cursor.Buffer
                                         );
                                     }
@@ -545,7 +547,7 @@ namespace Indra.Astra {
 
                 } while(cursor.Move(1));
 
-                tokens.Add(new(TokenType.EOF) {
+                tokens.Add(new(IToken.EOF) {
                     Position = cursor.Position + 1,
                     Line = cursor.Line,
                     Column = cursor.Column + 1,
@@ -557,20 +559,20 @@ namespace Indra.Astra {
                 #region Local Helper Functions
 
                 void appendToken_newLine(int length) {
-                    appendToken_lengthOf(length, TokenType.NEWLINE, true);
+                    appendToken_lengthOf(length, IToken.NEWLINE, true);
                     state._endLine();
                 }
 
-                void appendToken_length1(TokenType type)
+                void appendToken_length1(IToken type)
                     => appendToken_lengthOf(1, type, false);
 
-                void appendToken_length2(TokenType type)
+                void appendToken_length2(IToken type)
                     => appendToken_lengthOf(2, type, true);
 
-                void appendToken_length3(TokenType type)
+                void appendToken_length3(IToken type)
                     => appendToken_lengthOf(3, type, true);
 
-                void appendToken_lengthOf(int length, TokenType type, bool skip = true) {
+                void appendToken_lengthOf(int length, IToken type, bool skip = true) {
                     tokens.Add(new_token(type, length));
 
                     if(skip) {
@@ -578,7 +580,7 @@ namespace Indra.Astra {
                     }
                 }
 
-                void appendToken_quote(TokenType type) {
+                void appendToken_quote(IToken type) {
                     Token quote = new_token(type);
                     if(state.CurrentQuote is null) {
                         state.CurrentQuote = quote;
@@ -590,10 +592,10 @@ namespace Indra.Astra {
                     tokens.Add(quote);
                 }
 
-                bool tryAppendToken_length2(TokenType type)
+                bool tryAppendToken_length2(IToken type)
                     => tryAppendToken(2, type);
 
-                bool tryAppendToken(int length, TokenType type) {
+                bool tryAppendToken(int length, IToken type) {
                     Token token = new_token(type, length);
                     if(cursor.Move(length - 1)) {
                         tokens.Add(token);
@@ -613,7 +615,7 @@ namespace Indra.Astra {
 
                 Failure fail_withError(
                     ErrorCode code,
-                    TokenType? type = null,
+                    IToken? type = null,
                     object? data = null,
                     object? found = null,
                     object? expected = null,
@@ -640,7 +642,7 @@ namespace Indra.Astra {
 
             #region Local Helper Functions
 
-            Token new_token(TokenType type, int length = 1)
+            Token new_token(IToken type, int length = 1)
                 => new(type) {
                     Position = cursor.Position,
                     Line = cursor.Line,
@@ -677,7 +679,7 @@ namespace Indra.Astra {
                     } // check for link symbols (only allowed in the middle of a word; once)
                     else if(isValid_linkChar(1)) {
                         if(isValid_afterLinkChar(2)) {
-                            if(cursor.Next is '\'' && state.CurrentQuote?.Type == TokenType.SINGLE_QUOTE) {
+                            if(cursor.Next is '\'' && state.CurrentQuote?.Type == IToken.SINGLE_QUOTE) {
                                 break;
                             }
 
@@ -694,8 +696,8 @@ namespace Indra.Astra {
 
                 return new(
                     isNumeric
-                        ? TokenType.NUMBER
-                        : TokenType.WORD
+                        ? IToken.NUMBER
+                        : IToken.WORD
                 ) {
                     Position = start,
                     Line = line,

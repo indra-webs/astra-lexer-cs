@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using Indra.Astra.Tokens;
 
 using Meep.Tech.Data;
 
@@ -38,7 +38,7 @@ namespace Indra.Astra {
                     if(CurrentLevel > PreviousLevel) {
                         indentationTokens = new Token[CurrentLevel - PreviousLevel];
                         for(int i = indentationTokens.Length - 1; i >= 0; i--) {
-                            indentationTokens[i] = new Token(TokenType.INDENT) {
+                            indentationTokens[i] = new Token(IToken.INDENT) {
                                 Position = cursor.Position - i - 1,
                                 Length = 1,
                                 Line = cursor.Line,
@@ -49,7 +49,7 @@ namespace Indra.Astra {
                     else if(PreviousLevel > CurrentLevel) {
                         indentationTokens = new Token[PreviousLevel - CurrentLevel];
                         for(int i = indentationTokens.Length - 1; i >= 0; i--) {
-                            indentationTokens[i] = new Token(TokenType.DEDENT) {
+                            indentationTokens[i] = new Token(IToken.DEDENT) {
                                 Position = cursor.Position - i - 1,
                                 Length = 1,
                                 Line = cursor.Line,
