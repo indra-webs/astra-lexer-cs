@@ -1,10 +1,8 @@
-namespace Indra.Astra.Tokens
-{
+namespace Indra.Astra.Tokens {
   public record Percent
-  : TokenType<Percent>,
-    IOperator,
-    IAllowedAsWordLink
-  {
+    : TokenType<Percent>,
+      IOperator,
+      IAllowedAsWordLink {
 
     public char Value
       => '%';

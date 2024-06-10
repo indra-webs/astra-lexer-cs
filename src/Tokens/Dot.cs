@@ -1,9 +1,10 @@
 namespace Indra.Astra.Tokens {
   public record Dot
     : TokenType<Dot>,
-      ILookup {
+      ILookup,
+      INotAllowedInWord {
 
-    public string Value
-      => ".";
+    public char Value
+      => '.';
   }
 }

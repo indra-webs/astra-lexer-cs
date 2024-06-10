@@ -39,6 +39,12 @@ namespace Indra.Astra.Tokens {
     /// </summary>
     public virtual static IToken Type
       => throw new NotImplementedException();
+
+    /// <summary>
+    /// The default value of a token with this token type.
+    /// </summary>
+    public string DefaultValue
+      => throw new NotImplementedException();
   }
 
   /// <summary>

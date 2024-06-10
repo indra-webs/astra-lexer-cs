@@ -6,26 +6,6 @@ using Meep.Tech.Text;
 namespace Indra.Astra {
 
     public partial class Lexer {
-
-        /// <summary>
-        /// Symbols that are allowed to appear in the middle of a word just once.
-        ///     They cannot appear at the beginning or end of a word.
-        ///     They cannot appear twice in a row.
-        /// </summary>
-        public static readonly HashSet<char> WORD_LINK_SYMBOLS
-            = ['+', '-', '~', '%', '\''];
-
-        /// <summary>
-        /// Symbols that are not allowed to appear in a word at all.
-        /// </summary>
-        public static readonly HashSet<char> INVALID_WORD_SYMBOLS
-            = [
-                '.', '/', '?', '!', '&', '|',
-                '=', '<', '>', ',', ':', ';',
-                '"', '`', '#', '*', '(', ')',
-                '[', ']', '{', '}', '<', '>'
-            ];
-
         public Lexer() { }
 
         public Result Lex(IEnumerable<char> input) {
@@ -519,7 +499,7 @@ namespace Indra.Astra {
                             }
                         #endregion
                         #endregion
-                        #region Variables
+                        #region Variable
                         // escape sequences via backslash
                         case '\\': {
                                 if(cursor.ReadNext("eof") || cursor.ReadNext("EOF")) {
@@ -536,6 +516,7 @@ namespace Indra.Astra {
 
                                 break;
                             }
+                        // numbers and words
                         // all other characters, including alphanumeric digits, letters, $, @, etc; indicate a Word, Number, or Hybrid token
                         default: {
                                 Token wordOrNumber = lex_alphanumeric(cursor, state);
@@ -697,7 +678,7 @@ namespace Indra.Astra {
                     // check for end of word via whitespace, end of source, or invalid symbols
                     if(!isValid_wordChar(1, false)) {
                         break;
-                    } // check for link symbols (only alloweuuuuuuuuuuuuuujjjd in the middle of a word; once)
+                    } // check for link symbols (allowed once without repetition in the middle of the word)
                     else if(isValid_linkChar(1)) {
                         if(isValid_afterLinkChar(2)) {
                             if(cursor.Next is '\'' && state.CurrentQuote?.Type is SingleQuote) {
@@ -730,7 +711,7 @@ namespace Indra.Astra {
 
                 bool isValid_wordChar(int offset = 0, bool checkForLinkChars = true)
                     => cursor.Peek(offset, out char peeked)
-                       && !INVALID_WORD_SYMBOLS.Contains(peeked)
+                       && !Types.InvalidWordChars.Contains(peeked)
                        && !char.IsWhiteSpace(peeked)
                        && (!checkForLinkChars
                           || !isValid_linkChar(offset)
@@ -741,7 +722,7 @@ namespace Indra.Astra {
                         && !isValid_linkChar(offset);
 
                 bool isValid_linkChar(int offset = 0)
-                    => WORD_LINK_SYMBOLS.Contains(cursor.Peek(offset));
+                    => Types.WordLinkingChars.Contains(cursor.Peek(offset));
 
                 #endregion
             }

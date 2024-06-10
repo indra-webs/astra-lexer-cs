@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace Indra.Astra.Tokens {
   public static class Types {
-    private static Lazy<Dictionary<System.Type, TokenType>> _types
+    private static readonly Lazy<ReadOnlyDictionary<System.Type, TokenType>> _types
       = new (() => typeof(Types).Assembly.GetTypes()
           .Where(t => t.Namespace == "Indra.Astra.Tokens"
             && t.IsAssignableTo(typeof(TokenType))
@@ -14,17 +14,34 @@ namespace Indra.Astra.Tokens {
               t, BindingFlags.CreateInstance
                 | BindingFlags.NonPublic
                 | BindingFlags.Instance
-          )!)
+          )!).AsReadOnly()
       );
 
-    private static ReadOnlyDictionary<Type, TokenType> _ro_types
-      = null!;
+    private static readonly Lazy<IReadOnlySet<char>> _wordLinkingChars
+      = new (() => (IReadOnlySet<char>)All.Values
+          .Where(t => t is IAllowedAsWordLink)
+          .Select(t => ((IStatic)t).DefaultValue)
+          .ToHashSet()
+      );
+
+    private static readonly Lazy<IReadOnlySet<char>> _invalidWordChars
+      = new (() => (IReadOnlySet<char>)All.Values
+          .Where(t => t is INotAllowedInWord)
+          .Select(t => ((IStatic)t).DefaultValue)
+          .ToHashSet()
+      );
 
     public static IReadOnlyDictionary<System.Type, TokenType> All
-      => _ro_types ??= _types.Value.AsReadOnly();
+      => _types.Value;
+
+    public static IReadOnlySet<char> WordLinkingChars
+      => _wordLinkingChars.Value;
+
+    public static IReadOnlySet<char> InvalidWordChars
+      => _invalidWordChars.Value;
 
     public static TTokenType Get<TTokenType>()
       where TTokenType : TokenType<TTokenType>
-      => (TTokenType)_ro_types[typeof(TTokenType)];
+      => (TTokenType)All[typeof(TTokenType)];
   }
 }

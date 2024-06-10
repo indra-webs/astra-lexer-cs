@@ -26,6 +26,9 @@ namespace Indra.Astra.Tokens {
   public interface IStatic
     : IToken {
     public string Value { get; }
+
+    string IToken.DefaultValue
+      => Value;
   }
 
   /// <summary>
