@@ -1,8 +1,6 @@
-namespace Indra.Astra.Tokens
-{
+namespace Indra.Astra.Tokens {
   public interface IBracket
-  : IDelimiter
-  {
+    : IDelimiter {
     public new IBracket Pair
       => (IBracket)(this as IDelimiter).Pair;
   }

@@ -1,15 +1,5 @@
 namespace Indra.Astra.Tokens {
 
-  public static class Types {
-    static Dictionary<System.Type, TokenType> _types = [];
-
-    public static TTokenType Get<TTokenType>()
-      where TTokenType : TokenType<TTokenType>
-    => (TTokenType)(_types.TryGetValue(typeof(TTokenType), out TokenType? type)
-      ? type
-      : _types[typeof(TTokenType)] = Activator.CreateInstance<TTokenType>());
-  }
-
   /// <summary>
   ///   The base interface for all Token Type singletons and Token Type interfaces. Represents any/all type(s) of Token.
   /// </summary>

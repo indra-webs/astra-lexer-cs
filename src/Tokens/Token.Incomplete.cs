@@ -1,10 +1,8 @@
-namespace Indra.Astra.Tokens
-{
-  public partial class Token
-  {
-    public class Incomplete(Tokens.IToken type)
-        : Token(type)
-    {
+namespace Indra.Astra.Tokens {
+  public partial class Token {
+    public class Incomplete(TokenType type)
+        : Token(type) {
+
       public override string Name
           => $"!{base.Name}";
 
@@ -14,6 +12,5 @@ namespace Indra.Astra.Tokens
       override public string? GetExtraInfo()
           => $"*INCOMPLETE*";
     }
-
   }
 }

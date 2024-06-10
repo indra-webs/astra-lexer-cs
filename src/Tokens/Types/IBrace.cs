@@ -1,8 +1,6 @@
-namespace Indra.Astra.Tokens
-{
+namespace Indra.Astra.Tokens {
   public interface IBrace
-  : IDelimiter
-  {
+    : IDelimiter {
     public new IBrace Pair
       => (IBrace)(this as IDelimiter).Pair;
   }

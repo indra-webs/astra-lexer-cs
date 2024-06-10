@@ -4,9 +4,10 @@ namespace Indra.Astra.Tokens {
     : TokenType<Colon>,
       IAssigner,
       IOperator,
-      IAmbiguous<Colon, IAssigner, IOperator> {
+      IAmbiguous<Colon, IAssigner, IOperator>,
+      INotAllowedInWord {
 
-    public string Value
-      => ":";
+    public char Value
+      => ':';
   }
 }

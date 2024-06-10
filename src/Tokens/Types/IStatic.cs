@@ -27,4 +27,23 @@ namespace Indra.Astra.Tokens {
     : IToken {
     public string Value { get; }
   }
+
+  /// <summary>
+  /// A IStatic token that has a single character value.
+  /// </summary>
+  /// <remarks>
+  ///  <term><b>See Also</b></term><related><list type="bullet">
+  ///   <item>
+  ///    <term><seealso cref="IStatic"/></term>
+  ///   <description>Base interface.</description>
+  /// </item>
+  /// </list></related>
+  /// </remarks>
+  public interface ISingle
+    : IStatic {
+    public new char Value { get; }
+
+    string IStatic.Value
+      => Value.ToString();
+  }
 }

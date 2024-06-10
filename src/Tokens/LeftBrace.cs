@@ -1,9 +1,12 @@
 namespace Indra.Astra.Tokens {
   public record LeftBrace
-  : TokenType<LeftBrace>,
-    ILeftDelimiter {
-    public string Value
-      => "{";
+    : TokenType<LeftBrace>,
+      IBrace,
+      ILeftDelimiter,
+      INotAllowedInWord {
+
+    public char Value
+      => '{';
 
     public RightBrace Right
       => RightBrace.Type;

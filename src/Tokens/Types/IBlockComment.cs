@@ -1,9 +1,7 @@
-namespace Indra.Astra.Tokens
-{
+namespace Indra.Astra.Tokens {
   public interface IBlockComment
-  : IComment,
-    IDelimiter
-  {
+    : IComment,
+      IDelimiter {
     public new IBlockComment Pair
       => (IBlockComment)(this as IDelimiter).Pair;
   }

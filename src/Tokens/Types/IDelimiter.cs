@@ -1,6 +1,7 @@
 namespace Indra.Astra.Tokens {
   public interface IDelimiter
-  : IStatic {
+    : IStatic {
+
     public IDelimiter Pair { get; }
   }
 }

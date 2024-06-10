@@ -1,6 +1,11 @@
 namespace Indra.Astra.Tokens {
+
+  public interface IAmbiguous
+    : IToken;
+
   public interface IAmbiguous<TBetween, TEither, TOr>
-    : IToken<TBetween>
+    : IAmbiguous,
+      IToken<TBetween>
     where TBetween : TEither, TOr, IToken<TBetween>
     where TEither : IToken
     where TOr : IToken {

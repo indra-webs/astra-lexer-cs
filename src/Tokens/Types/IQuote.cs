@@ -1,6 +1,8 @@
 namespace Indra.Astra.Tokens {
   public interface IQuote
-  : IDelimiter {
+    : IDelimiter,
+      ISingle {
+
     public new IQuote Pair { get; }
     IDelimiter IDelimiter.Pair
       => Pair;
@@ -11,6 +13,7 @@ namespace Indra.Astra.Tokens {
       IDelimiter,
       IToken<TSelf>
     where TSelf : IQuote<TSelf> {
+
     public new TSelf Pair
       => TSelf.Type;
 

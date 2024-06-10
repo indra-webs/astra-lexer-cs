@@ -1,8 +1,9 @@
 namespace Indra.Astra.Tokens {
   public record Comma
-  : TokenType<Comma>,
-    ISeparator {
-    public string Value
-      => ",";
+    : TokenType<Comma>,
+      ISeparator,
+      INotAllowedInWord {
+    public char Value
+      => ',';
   }
 }

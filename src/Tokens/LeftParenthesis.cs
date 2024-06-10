@@ -3,10 +3,11 @@ namespace Indra.Astra.Tokens {
   public record LeftParenthesis
     : TokenType<LeftParenthesis>,
       IParenthesis,
-      ILeftDelimiter {
+      ILeftDelimiter,
+      INotAllowedInWord {
 
-    public string Value
-      => "(";
+    public char Value
+      => '(';
 
     public RightParenthesis Right
       => RightParenthesis.Type;
