@@ -5,13 +5,18 @@ using Meep.Tech.Text;
 
 namespace Indra.Astra {
 
+    /// <summary>
+    /// A lexer for the Astra family of languages.
+    /// </summary>
     public partial class Lexer {
-        public Lexer() { }
 
+        /// <summary>
+        /// Lexes the input text into a sequence of tokens.
+        /// </summary>
         public Result Lex(IEnumerable<char> input) {
             TextCursor cursor = new(input);
 
-            if(cursor.HasEmptySource) {
+            if(cursor.SourceIsEmpty) {
                 return new Success(cursor.Text, []);
             } // Scan:
             else {
@@ -38,11 +43,11 @@ namespace Indra.Astra {
                             }
                         // skip spaces and tabs and null chars within a line (after indentation & first token / between tokens / end of line)
                         case ' ' or '\t' or '\0': {
-                                while(cursor.Read([' ', '\t', '\0'])) {
+                                while(cursor.ReadNext(' ', '\t', '\0')) {
                                     continue;
                                 }
 
-                                continue;
+                                break;
                             }
                         #endregion
                         #region Symbols
@@ -653,7 +658,7 @@ namespace Indra.Astra {
                 };
 
             void lex_indents(TextCursor cursor, List<Token> tokens, State state) {
-                while(cursor.Read([' ', '\t'], out char indent)) {
+                while(cursor.Read(out char indent, [' ', '\t'])) {
                     state._pushIndent(indent);
                 }
 

@@ -31,8 +31,7 @@ namespace Indra.Astra.Tokens {
     /// <summary>
     /// The name of this token type.
     /// </summary>
-    public string Name
-      => GetType().Name;
+    public string Name { get; }
 
     /// <summary>
     /// The instance of this type of token.
@@ -114,7 +113,7 @@ namespace Indra.Astra.Tokens {
 
     /// <inheritdoc cref="IToken.Name"/>
     public string Name
-      => ((IToken)this).Name;
+      => GetType().Name;
 
     /// <inheritdoc cref="IToken.Type"/>
     public static IToken Type

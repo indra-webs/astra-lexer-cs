@@ -2,7 +2,14 @@ using System.Collections.ObjectModel;
 using System.Reflection;
 
 namespace Indra.Astra.Tokens {
+
+  /// <summary>
+  /// Provides access to all token types.
+  /// </summary>
   public static class Types {
+
+    #region Private Fields
+    
     private static readonly Lazy<ReadOnlyDictionary<System.Type, TokenType>> _types
       = new (() => typeof(Types).Assembly.GetTypes()
           .Where(t => t.Namespace == "Indra.Astra.Tokens"
@@ -10,36 +17,54 @@ namespace Indra.Astra.Tokens {
             && !t.IsInterface
             && !t.IsAbstract)
           .ToDictionary(t => t,
-            t => (TokenType)Activator.CreateInstance(
-              t, BindingFlags.CreateInstance
-                | BindingFlags.NonPublic
+            t => (TokenType)t.Assembly.CreateInstance(
+              t.FullName!,
+              false,
+              BindingFlags.CreateInstance
                 | BindingFlags.Instance
-          )!).AsReadOnly()
+                | BindingFlags.Public
+                | BindingFlags.NonPublic,
+              null, null, null, null
+            )!).AsReadOnly()
       );
 
-    private static readonly Lazy<IReadOnlySet<char>> _wordLinkingChars
-      = new (() => (IReadOnlySet<char>)All.Values
+    private static readonly Lazy<HashSet<char>> _wordLinkingChars
+      = new (() => All.Values
           .Where(t => t is IAllowedAsWordLink)
-          .Select(t => ((IStatic)t).DefaultValue)
+          .Select(t => ((ISingle)t).Value)
           .ToHashSet()
       );
 
-    private static readonly Lazy<IReadOnlySet<char>> _invalidWordChars
-      = new (() => (IReadOnlySet<char>)All.Values
+    private static readonly Lazy<HashSet<char>> _invalidWordChars
+      = new (() => All.Values
           .Where(t => t is INotAllowedInWord)
-          .Select(t => ((IStatic)t).DefaultValue)
+          .Select(t => ((ISingle)t).Value)
           .ToHashSet()
       );
 
+    #endregion
+
+    /// <summary>
+    /// All token type singleton by their System.Type.
+    /// </summary>
     public static IReadOnlyDictionary<System.Type, TokenType> All
       => _types.Value;
 
+    /// <summary>
+    /// All <see cref="IAllowedAsWordLink"/> token types.
+    /// </summary>
     public static IReadOnlySet<char> WordLinkingChars
       => _wordLinkingChars.Value;
 
+    /// <summary>
+    /// All <see cref="INotAllowedInWord"/> token types.
+    /// </summary>
     public static IReadOnlySet<char> InvalidWordChars
       => _invalidWordChars.Value;
 
+    /// <summary>
+    /// Get a token type by its System.Type.
+    /// </summary>
     public static TTokenType Get<TTokenType>()
       where TTokenType : TokenType<TTokenType>
       => (TTokenType)All[typeof(TTokenType)];

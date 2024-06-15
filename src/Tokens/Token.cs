@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
+using Meep.Tech.Text;
+
 namespace Indra.Astra.Tokens {
 
     /// <summary>
@@ -72,7 +74,9 @@ namespace Indra.Astra.Tokens {
         /// The name of the token type.
         /// </summary>
         public virtual string Name
-            => Type.Name;
+            => Type.Name
+                .ToSnakeCase()
+                .ToUpperInvariant();
 
         /// <inheritdoc cref="Index"/>
         public int Start
