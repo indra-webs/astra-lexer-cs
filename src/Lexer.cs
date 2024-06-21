@@ -511,11 +511,8 @@ namespace Indra.Astra {
                                     appendToken_ofType<Escape>(2, false);
                                 }
                                 else {
-                                    if(!tryAppend_token<Escape>(2)) {
+                                    if(!tryAppendToken<Escape>(2)) {
                                         appendToken_ofType<Backslash>(1);
-                                    }
-                                    else {
-                                        appendToken_ofType<Escape>(2);
                                     }
                                 }
 
@@ -590,23 +587,15 @@ namespace Indra.Astra {
                     tokens.Add(quote);
                 }
 
-                bool tryAppend_token<T>(int length)
+                bool tryAppendToken<T>(int length)
                     where T : TokenType<T> {
                     Token token = new_token_ofType<T>(length);
                     if(cursor.Move(length - 1)) {
                         tokens.Add(token);
                         return true;
                     }
-                    else {
-                        tokens.Add(new Token.Incomplete(Types.Get<T>()) {
-                            Index = cursor.Position,
-                            Line = cursor.Line,
-                            Column = cursor.Column,
-                            Length = cursor.Buffer
-                        });
 
-                        return false;
-                    }
+                    return false;
                 }
 
 #pragma warning disable CS8321 // Local function is declared but never used

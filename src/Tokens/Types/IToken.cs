@@ -1,3 +1,5 @@
+using Meep.Tech.Text;
+
 namespace Indra.Astra.Tokens {
 
   /// <summary>
@@ -26,7 +28,7 @@ namespace Indra.Astra.Tokens {
   ///     <item><note>Use the generic version (<seealso href="IToken{TSelf}">IToken&lt;&gt;</seealso>) to define new token types instead of this.</note></item>
   ///   </list></notes>
   /// </remarks>
-  public interface IToken {
+  public interface IToken : IEquatable<IToken> {
 
     /// <summary>
     /// The name of this token type.
@@ -118,6 +120,34 @@ namespace Indra.Astra.Tokens {
     /// <inheritdoc cref="IToken.Type"/>
     public static IToken Type
       => throw new NotImplementedException();
+
+    /// <inheritdoc />
+    public override string ToString()
+      => Name
+        .ToSnakeCase()
+        .ToUpperInvariant();
+
+    /// <inheritdoc />
+    public bool Equals(IToken? other)
+      => other is not null
+      && other.GetType() == GetType();
+
+    /// <inheritdoc />
+    public virtual bool Equals(TokenType? other)
+      => other is not null
+      && other.GetType() == GetType();
+
+    /// <inheritdoc />
+    public static bool operator ==(TokenType? left, IToken? right)
+      => left?.Equals(right) ?? right is null;
+
+    /// <inheritdoc />
+    public static bool operator !=(TokenType? left, IToken? right)
+      => !(left == right);
+
+    /// <inheritdoc />
+    public override int GetHashCode()
+      => GetType().GetHashCode();
   }
 
   /// <summary>

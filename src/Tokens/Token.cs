@@ -95,6 +95,7 @@ namespace Indra.Astra.Tokens {
         public Range Range
             => Index..(Index + Length);
 
+        /// <inheritdoc />
         public sealed override string ToString()
             => ToString(default!);
 

@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
 using System.Reflection;
 
+using Meep.Tech.Collections;
+
 namespace Indra.Astra.Tokens {
 
   /// <summary>
@@ -9,7 +11,7 @@ namespace Indra.Astra.Tokens {
   public static class Types {
 
     #region Private Fields
-    
+
     private static readonly Lazy<ReadOnlyDictionary<System.Type, TokenType>> _types
       = new (() => typeof(Types).Assembly.GetTypes()
           .Where(t => t.Namespace == "Indra.Astra.Tokens"
@@ -28,18 +30,28 @@ namespace Indra.Astra.Tokens {
             )!).AsReadOnly()
       );
 
-    private static readonly Lazy<HashSet<char>> _wordLinkingChars
+    private static readonly Lazy<ReadOnlySet<IStatic>> _static
+      = new (() => All.Values
+          .Where(t => t is IStatic)
+          .Cast<IStatic>()
+          .ToHashSet()
+          .AsReadOnly()
+      );
+
+    private static readonly Lazy<ReadOnlySet<char>> _wordLinkingChars
       = new (() => All.Values
           .Where(t => t is IAllowedAsWordLink)
           .Select(t => ((ISingle)t).Value)
           .ToHashSet()
+          .AsReadOnly()
       );
 
-    private static readonly Lazy<HashSet<char>> _invalidWordChars
+    private static readonly Lazy<ReadOnlySet<char>> _invalidWordChars
       = new (() => All.Values
           .Where(t => t is INotAllowedInWord)
           .Select(t => ((ISingle)t).Value)
           .ToHashSet()
+          .AsReadOnly()
       );
 
     #endregion
@@ -61,6 +73,12 @@ namespace Indra.Astra.Tokens {
     /// </summary>
     public static IReadOnlySet<char> InvalidWordChars
       => _invalidWordChars.Value;
+
+    /// <summary>
+    /// All <see cref="IStatic"/> token types.
+    /// </summary>
+    public static IReadOnlySet<IStatic> Static
+      => _static.Value;
 
     /// <summary>
     /// Get a token type by its System.Type.
