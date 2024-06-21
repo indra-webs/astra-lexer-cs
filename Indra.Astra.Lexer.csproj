@@ -4,11 +4,13 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\..\libs\utils\cs\Meep.Tech.Data.Cursor\Meep.Tech.Data.Cursor.csproj" />
     <ProjectReference Include="..\..\..\..\..\..\libs\utils\cs\Meep.Tech.Extensions.Text\Meep.Tech.Extensions.Text.csproj" />
+    <ProjectReference Include="..\..\..\..\..\..\libs\utils\cs\Meep.Tech.Collections.ReadOnlySet\Meep.Tech.Collections.ReadOnlySet.csproj" />
   </ItemGroup>
 
 </Project>

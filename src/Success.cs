@@ -1,3 +1,5 @@
+using Indra.Astra.Tokens;
+
 namespace Indra.Astra {
 
   public partial class Lexer {
