@@ -21,6 +21,7 @@ namespace Indra.Astra {
     ///  </list></related>
     /// </remarks>
     public record Success : Result {
+
       /// <inheritdoc />
       public override Token[] Tokens { get; }
 
