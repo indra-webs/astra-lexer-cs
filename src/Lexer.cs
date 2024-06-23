@@ -17,10 +17,11 @@ namespace Indra.Astra {
             TextCursor cursor = new(input);
 
             if(cursor.SourceIsEmpty) {
-                return new Success(cursor.Text, []);
+                return new Success(cursor.Text, [], []);
             } // Scan:
             else {
                 List<Token> tokens = [];
+                HashSet<TokenType> types = [];
                 State state = new();
 
                 do {
@@ -522,7 +523,7 @@ namespace Indra.Astra {
                         // all other characters, including alphanumeric digits, letters, $, @, etc; indicate a Word, Number, or Hybrid token
                         default: {
                                 Token wordOrNumber = lex_alphanumeric(cursor, state);
-                                tokens.Add(wordOrNumber);
+                                addToken(wordOrNumber);
 
                                 break;
                             }
@@ -533,19 +534,28 @@ namespace Indra.Astra {
 
                 } while(cursor.Move(1));
 
-                tokens.Add(new Token.OfType<EndOfFile> {
+                addToken(new Token.OfType<EndOfFile> {
                     Index = cursor.Position + 1,
                     Line = cursor.Line,
                     Column = cursor.Column + 1,
                     Length = 0
                 });
 
-                return new Success(cursor.Text, [.. tokens]);
+                return new Success(
+                    cursor.Text,
+                    [.. tokens],
+                    types
+                );
 
                 #region Local Helper Functions
 
+                void addToken(Token token) {
+                    tokens.Add(token);
+                    types.Add(token.Type);
+                }
+
                 void appendToken(TokenType type, int length, bool read = true) {
-                    tokens.Add(new_token(type, length));
+                    addToken(new_token(type, length));
 
                     if(read) {
                         cursor.Skip(length - 1);
@@ -584,14 +594,14 @@ namespace Indra.Astra {
                         state.CurrentQuote = null;
                     }
 
-                    tokens.Add(quote);
+                    addToken(quote);
                 }
 
                 bool tryAppendToken<T>(int length)
                     where T : TokenType<T> {
                     Token token = new_token_ofType<T>(length);
                     if(cursor.Move(length - 1)) {
-                        tokens.Add(token);
+                        addToken(token);
                         return true;
                     }
 
@@ -621,7 +631,7 @@ namespace Indra.Astra {
                             expected?.ToString(),
                             length ?? 1
                         )
-                    ], tokens);
+                    ], tokens, types);
 #pragma warning restore CS8321 // Local function is declared but never used
 
                 #endregion

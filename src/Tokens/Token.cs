@@ -35,6 +35,10 @@ namespace Indra.Astra.Tokens {
         /// </summary>
         public class OfType<T> : Token
             where T : TokenType<T> {
+
+            /// <summary>
+            /// Helper constructor to create a token of a specific type.
+            /// </summary>
             public OfType()
                 : base(Types.Get<T>()) { }
         }
@@ -99,6 +103,9 @@ namespace Indra.Astra.Tokens {
         public sealed override string ToString()
             => ToString(default!);
 
+        /// <summary>
+        /// Get a string containing all the information about this token.
+        /// </summary> 
         public virtual string ToString(
             string source,
             Func<
@@ -124,12 +131,18 @@ namespace Indra.Astra.Tokens {
             }
         }
 
+        /// <summary>
+        /// Get the location information of this token.
+        /// </summary> 
         public string GetLocationInfo()
             => $"({Line}, {Column}) [{Index}{(
                 Length > 0
                     ? $"..{Index + Length}]{"{"}{Length}{"}"}"
                     : $"]")}";
 
+        /// <summary>
+        /// Get the text of this token from the full source text.
+        /// </summary> 
         public virtual string GetSourceText([NotNull] string source)
             => Type is EndOfFile
                 ? "\\EOF"
@@ -143,6 +156,9 @@ namespace Indra.Astra.Tokens {
                             ? "\\b"
                             : source[Range];
 
+        /// <summary>
+        /// Get any extra information about this token.
+        /// </summary>
         public virtual string? GetExtraInfo()
             => null;
 
