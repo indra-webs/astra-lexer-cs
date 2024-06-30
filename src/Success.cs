@@ -5,6 +5,7 @@ using Meep.Tech.Collections;
 namespace Indra.Astra {
 
   public partial class Lexer {
+
     /// <summary>
     /// Represents a successful result of a <see cref="Lexer"/> operation.
     /// </summary>
@@ -37,12 +38,32 @@ namespace Indra.Astra {
       /// Creates a new successful result.
       /// </summary>
       public Success(
-        string source,
-        Token[] tokens,
+        string text,
+        IEnumerable<Token> tokens,
         HashSet<TokenType> types
-      ) : base(source)
+      ) : base(text)
         => (Tokens, Types)
-          = (tokens, types.AsReadOnly());
+          = (tokens.Select(t => {
+            t.Source = this;
+            return t;
+          }).ToArray(),
+          types.AsReadOnly());
+
+      /// <inheritdoc cref="Result.Text"/>
+      public string GetText()
+        => new(Text.AsSpan()[..]);
+
+      /// <summary>
+      /// Gets the text of a specific token.
+      /// </summary>
+      public string GetText(Token token)
+        => token.GetSourceText(Text);
+
+      /// <summary>
+      /// Gets the text for a range of tokens from the source text (inclusive).
+      /// </summary>
+      public string GetText(Token start, Token end)
+        => Text[start.Range.Start..end.Range.End];
     }
   }
 }

@@ -47,8 +47,7 @@ namespace Indra.Astra {
       ) : base(source) {
         Errors = errors;
         Types = types?.AsReadOnly() ?? Types;
-        __tokens = tokens;
-
+        __tokens = tokens?.ForEach(t => t.Source = this);
       }
     }
   }

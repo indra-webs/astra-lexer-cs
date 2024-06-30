@@ -1,6 +1,6 @@
 ﻿using Indra.Astra.Tokens;
 
-using Meep.Tech.Data;
+using Meep.Tech.Collections;
 using Meep.Tech.Text;
 
 namespace Indra.Astra {
@@ -8,7 +8,19 @@ namespace Indra.Astra {
     /// <summary>
     /// A lexer for the Astra family of languages.
     /// </summary>
-    public partial class Lexer {
+    /// <param name="config">The configuration settings for the lexer.</param>
+    public partial class Lexer(Lexer.Config config = null!) {
+
+        /// <summary>
+        /// The configuration for the lexer.
+        /// </summary>
+        public record Config;
+
+        /// <summary>
+        /// The configuration sefttings provided to the lexer.
+        /// </summary>
+        public Config Settings { get; }
+            = config ?? new();
 
         /// <summary>
         /// Lexes the input text into a sequence of tokens.
@@ -396,7 +408,17 @@ namespace Indra.Astra {
                         case '&': {
                                 switch(cursor.Next) {
                                     case '&': {
-                                            appendToken_length2_ofType<DoubleAnd>();
+                                            switch(cursor.Peek(2)) {
+                                                case '=': {
+                                                        appendToken_length3_ofType<DoubleAndEqual>();
+                                                        break;
+                                                    }
+                                                default: {
+                                                        appendToken_length2_ofType<DoubleAnd>();
+                                                        break;
+                                                    }
+                                            }
+
                                             break;
                                         }
                                     case '=': {
@@ -414,7 +436,17 @@ namespace Indra.Astra {
                         case '|': {
                                 switch(cursor.Next) {
                                     case '|': {
-                                            appendToken_length2_ofType<DoublePipe>();
+                                            switch(cursor.Peek(2)) {
+                                                case '=': {
+                                                        appendToken_length3_ofType<DoublePipeEqual>();
+                                                        break;
+                                                    }
+                                                default: {
+                                                        appendToken_length2_ofType<DoublePipe>();
+                                                        break;
+                                                    }
+                                            }
+
                                             break;
                                         }
                                     case '=': {
@@ -543,7 +575,7 @@ namespace Indra.Astra {
 
                 return new Success(
                     cursor.Text,
-                    [.. tokens],
+                    tokens,
                     types
                 );
 
@@ -564,7 +596,7 @@ namespace Indra.Astra {
 
                 void appendToken_ofType<T>(int length, bool read = true)
                     where T : TokenType<T>
-                    => appendToken(Types.Get<T>(), length, read);
+                    => appendToken(Tokens.Types.Get<T>(), length, read);
 
                 void appendToken_length1_ofType<T>()
                     where T : TokenType<T>
@@ -585,7 +617,7 @@ namespace Indra.Astra {
 
                 void appendToken_quote<TQuote>()
                     where TQuote : TokenType<TQuote>, IQuote<TQuote> {
-                    TQuote type = Types.Get<TQuote>();
+                    TQuote type = Tokens.Types.Get<TQuote>();
                     Token quote = new_token(type);
                     if(state.CurrentQuote is null) {
                         state.CurrentQuote = quote;
@@ -676,7 +708,13 @@ namespace Indra.Astra {
                 do {
                     // check for pure numbers
                     if(isNumeric && !char.IsDigit(cursor.Current)) {
-                        isNumeric = false;
+                        // allow single underscores in numbers between digits
+                        if(cursor.Current is '_' && cursor.Position != start && cursor.Peek(1).IsDigit()) {
+                            continue;
+                        }
+                        else {
+                            isNumeric = false;
+                        }
                     }
 
                     // check for end of word via whitespace, end of source, or invalid symbols
@@ -715,7 +753,7 @@ namespace Indra.Astra {
 
                 bool isValid_wordChar(int offset = 0, bool checkForLinkChars = true)
                     => cursor.Peek(offset, out char peeked)
-                       && !Types.InvalidWordChars.Contains(peeked)
+                       && !Tokens.Types.InvalidWordChars.Contains(peeked)
                        && !char.IsWhiteSpace(peeked)
                        && (!checkForLinkChars
                           || !isValid_linkChar(offset)
@@ -726,7 +764,7 @@ namespace Indra.Astra {
                         && !isValid_linkChar(offset);
 
                 bool isValid_linkChar(int offset = 0)
-                    => Types.WordLinkingChars.Contains(cursor.Peek(offset));
+                    => Tokens.Types.WordLinkingChars.Contains(cursor.Peek(offset));
 
                 #endregion
             }

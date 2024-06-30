@@ -9,7 +9,7 @@ namespace Indra.Astra {
     /// <summary>
     /// The result of a lexer operation.
     /// </summary>
-    /// <param name="Source">The compiled source text that was lexed.</param>
+    /// <param name="Text">The entirety of the source text that was processed by the lexer.</param>
     /// <remarks>
     ///  <term><b>See Also</b></term><related><list type="bullet"> 
     ///   <item>
@@ -22,7 +22,7 @@ namespace Indra.Astra {
     ///   </item>
     ///  </list></related>
     /// </remarks>
-    public abstract record Result(string Source) {
+    public abstract record Result(string Text) {
 
       /// <summary>
       /// Whether the lexer operation was successful.

@@ -46,7 +46,14 @@ namespace Indra.Astra.Tokens {
         /// <summary>
         /// What kind of token this is.
         /// </summary>
-        public TokenType Type { get; } = type;
+        public TokenType Type { get; }
+            = type;
+
+        /// <summary>
+        /// The result of the lexer operation that produced this token.
+        /// </summary>
+        public Lexer.Result Source { get; internal set; }
+            = null!;
 
         /// <summary>
         /// The index of the start of this token in the source text. (inclusive if length > 0)
@@ -99,42 +106,48 @@ namespace Indra.Astra.Tokens {
         public Range Range
             => Index..(Index + Length);
 
-        /// <inheritdoc />
-        public sealed override string ToString()
-            => ToString(default!);
+        /// <summary>
+        /// The text of this token as it appears in the source.
+        /// </summary>
+        public string Text
+            => GetSourceText();
+
+        /// <summary>
+        /// Whether this token is of a specific type.
+        /// </summary>
+        public bool Is<T>(T? type = null)
+            where T : TokenType<T>
+            => Type is T;
 
         /// <summary>
         /// Get a string containing all the information about this token.
         /// </summary> 
-        public virtual string ToString(
-            string source,
+        public virtual string GetDebugText(
             Func<
                 (string name, string info, string code, string extra),
                 (string name, string info, string code, string extra)
             > formatParts = null!
         ) {
             if(formatParts is null) {
-                return _joinStringParts(
+                return _formatDebugText(
                    Name,
-                   GetLocationInfo(),
-                   source is not null
-                       ? GetSourceText(source)
-                       : null,
-                      GetExtraInfo()
+                   GetLocationText(),
+                   GetSourceText(),
+                   GetExtraText()
                );
             }
             else {
                 (string name, string info, string code, string extra)
-                    = formatParts((Name, GetLocationInfo(), GetSourceText(source), GetExtraInfo() ?? ""));
+                    = formatParts((Name, GetLocationText(), GetSourceText(), GetExtraText() ?? ""));
 
-                return _joinStringParts(name, info, code, extra);
+                return _formatDebugText(name, info, code, extra);
             }
         }
 
         /// <summary>
         /// Get the location information of this token.
         /// </summary> 
-        public string GetLocationInfo()
+        public string GetLocationText()
             => $"({Line}, {Column}) [{Index}{(
                 Length > 0
                     ? $"..{Index + Length}]{"{"}{Length}{"}"}"
@@ -143,26 +156,32 @@ namespace Indra.Astra.Tokens {
         /// <summary>
         /// Get the text of this token from the full source text.
         /// </summary> 
-        public virtual string GetSourceText([NotNull] string source)
+        public virtual string GetSourceText()
             => Type is EndOfFile
                 ? "\\EOF"
                 : Type is NewLine
                     ? "\\n"
                     : Type is Indent
-                        ? source[Index] is '\t'
+                        ? Source.Text[Index] is '\t'
                             ? "\\t"
                             : "\\s"
                         : Type is Dedent
                             ? "\\b"
-                            : source[Range];
+                            : Source.Text[Range];
 
         /// <summary>
         /// Get any extra information about this token.
         /// </summary>
-        public virtual string? GetExtraInfo()
+        public virtual string? GetExtraText()
             => null;
 
-        private static string _joinStringParts(
+        /// <summary>
+        /// Get the type of this token.
+        /// </summary>
+        public static implicit operator TokenType(Token token)
+            => token.Type;
+
+        private static string _formatDebugText(
             string name,
             string location,
             string? source,
