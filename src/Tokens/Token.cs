@@ -156,7 +156,7 @@ namespace Indra.Astra.Tokens {
         /// <summary>
         /// Get the text of this token from the full source text.
         /// </summary> 
-        public virtual string GetSourceText()
+        public virtual string GetEscapedText()
             => Type is EndOfFile
                 ? "\\EOF"
                 : Type is NewLine
@@ -168,6 +168,16 @@ namespace Indra.Astra.Tokens {
                         : Type is Dedent
                             ? "\\b"
                             : Source.Text[Range];
+
+        /// <summary>
+        /// Get the exact source text of this token from the original source code.
+        /// </summary> 
+        public virtual string GetSourceText()
+            => Type is EndOfFile
+                ? "\\EOF"
+                : Type is Dedent
+                    ? ""
+                    : Source.Text[Range];
 
         /// <summary>
         /// Get any extra information about this token.

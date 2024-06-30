@@ -54,12 +54,6 @@ namespace Indra.Astra {
         => new(Text.AsSpan()[..]);
 
       /// <summary>
-      /// Gets the text of a specific token.
-      /// </summary>
-      public string GetText(Token token)
-        => token.GetSourceText(Text);
-
-      /// <summary>
       /// Gets the text for a range of tokens from the source text (inclusive).
       /// </summary>
       public string GetText(Token start, Token end)
