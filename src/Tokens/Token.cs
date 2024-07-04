@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-using Meep.Tech.Text;
+﻿using Meep.Tech.Text;
 
 namespace Indra.Astra.Tokens {
 
@@ -29,6 +27,13 @@ namespace Indra.Astra.Tokens {
     /// </remarks>
     /// <param name="type">The <see cref="TokenType"/> of the token.</param>
     public partial class Token(TokenType type) {
+
+        #region Private Fields
+
+        private Padding? _padding;
+
+        #endregion
+
 
         /// <summary>
         /// A <see cref="Token"/> with a specific <see cref="TokenType"/>.
@@ -113,11 +118,19 @@ namespace Indra.Astra.Tokens {
             => GetSourceText();
 
         /// <summary>
+        /// The padding around this token.
+        /// </summary>
+        public Padding Padding
+            => _padding ??= new(this);
+
+        /// <summary>
         /// Whether this token is of a specific type.
         /// </summary>
         public bool Is<T>(T? type = null)
             where T : TokenType<T>
-            => Type is T;
+            => type is null
+                ? Type is T
+                : Type is T t && t.Equals(type);
 
         /// <summary>
         /// Get a string containing all the information about this token.
