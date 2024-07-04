@@ -3,10 +3,10 @@ namespace Indra.Astra.Tokens {
   public record LeftAngle
     : TokenType<LeftAngle>,
       IAngle,
-      ILeftDelimiter,
+      IOpenDelimiter,
       IComparer,
       IAmbiguous<LeftAngle, IComparer, IAngle>,
-      IAmbiguous<LeftAngle, IComparer, ILeftDelimiter>,
+      IAmbiguous<LeftAngle, IComparer, IOpenDelimiter>,
       INotAllowedInWord {
 
     public char Value
@@ -15,7 +15,7 @@ namespace Indra.Astra.Tokens {
     public RightAngle Right
       => RightAngle.Type;
 
-    IRightDelimiter ILeftDelimiter.Right
+    ICloseDelimiter IOpenDelimiter.Close
       => Right;
   }
 }

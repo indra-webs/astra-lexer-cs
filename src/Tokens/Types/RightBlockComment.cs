@@ -1,16 +1,16 @@
 namespace Indra.Astra.Tokens {
   public record CloseBlockComment
     : TokenType<CloseBlockComment>,
-      IRightDelimiter,
+      ICloseDelimiter,
       IBlockComment {
 
     public string Value
       => "*/";
 
-    public OpenBlockComment Left
+    public OpenBlockComment Open
       => OpenBlockComment.Type;
 
-    ILeftDelimiter IRightDelimiter.Left
-      => Left;
+    IOpenDelimiter ICloseDelimiter.Open
+      => Open;
   }
 }

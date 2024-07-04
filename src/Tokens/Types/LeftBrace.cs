@@ -1,17 +1,17 @@
 namespace Indra.Astra.Tokens {
-  public record LeftBrace
-    : TokenType<LeftBrace>,
+  public record OpenBrace
+    : TokenType<OpenBrace>,
       IBrace,
-      ILeftDelimiter,
+      IOpenDelimiter,
       INotAllowedInWord {
 
     public char Value
       => '{';
 
-    public RightBrace Right
-      => RightBrace.Type;
+    public CloseBrace Close
+      => CloseBrace.Type;
 
-    IRightDelimiter ILeftDelimiter.Right
-      => Right;
+    ICloseDelimiter IOpenDelimiter.Close
+      => Close;
   }
 }

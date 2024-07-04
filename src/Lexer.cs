@@ -66,27 +66,27 @@ namespace Indra.Astra {
                         #region Symbols
                         #region Brackets
                         case '(': {
-                                appendToken_length1_ofType<LeftParenthesis>();
+                                appendToken_length1_ofType<OpenParenthesis>();
                                 break;
                             }
                         case ')': {
-                                appendToken_length1_ofType<RightParenthesis>();
+                                appendToken_length1_ofType<CloseParenthesis>();
                                 break;
                             }
                         case '[': {
-                                appendToken_length1_ofType<LeftBracket>();
+                                appendToken_length1_ofType<OpenBracket>();
                                 break;
                             }
                         case ']': {
-                                appendToken_length1_ofType<RightBracket>();
+                                appendToken_length1_ofType<CloseBracket>();
                                 break;
                             }
                         case '{': {
-                                appendToken_length1_ofType<LeftBrace>();
+                                appendToken_length1_ofType<OpenBrace>();
                                 break;
                             }
                         case '}': {
-                                appendToken_length1_ofType<RightBrace>();
+                                appendToken_length1_ofType<CloseBrace>();
                                 break;
                             }
                         case '<': {
