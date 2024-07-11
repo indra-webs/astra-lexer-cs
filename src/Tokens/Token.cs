@@ -193,6 +193,14 @@ namespace Indra.Astra.Tokens {
                     : Source.Text[Range];
 
         /// <summary>
+        /// Get the text of this token until the end of another token.
+        /// </summary>
+        public string GetTextUntil(Token end, bool inclusive = false)
+            => inclusive
+                ? Source.Text[Start..end.End]
+                : Source.Text[End..end.Start];
+
+        /// <summary>
         /// Get any extra information about this token.
         /// </summary>
         public virtual string? GetExtraText()

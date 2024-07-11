@@ -46,6 +46,16 @@ namespace Indra.Astra {
         get;
         init;
       } = [];
+
+      /// <inheritdoc cref="Result.Text"/>
+      public string GetText()
+        => new(Text.AsSpan()[..]);
+
+      /// <summary>
+      /// Gets the text for a range of tokens from the source text (inclusive).
+      /// </summary>
+      public string GetText(Token start, Token end)
+        => Text[start.Range.Start..end.Range.End];
     }
   }
 }
