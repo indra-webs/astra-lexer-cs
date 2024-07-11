@@ -567,7 +567,7 @@ namespace Indra.Astra {
                 } while(cursor.Move(1));
 
                 addToken(new Token.OfType<EndOfFile> {
-                    Index = cursor.Position + 1,
+                    Index = cursor.Index + 1,
                     Line = cursor.Line,
                     Column = cursor.Column + 1,
                     Length = 0
@@ -653,7 +653,7 @@ namespace Indra.Astra {
                 ) => new(cursor.Text, [
                         new Error(
                             code,
-                            position ?? cursor.Position,
+                            position ?? cursor.Index,
                             cursor.Line,
                             cursor.Column,
                             type,
@@ -673,7 +673,7 @@ namespace Indra.Astra {
 
             Token new_token(TokenType type, int length = 1)
                 => new(type) {
-                    Index = cursor.Position,
+                    Index = cursor.Index,
                     Line = cursor.Line,
                     Column = cursor.Column,
                     Length = length
@@ -682,7 +682,7 @@ namespace Indra.Astra {
             Token new_token_ofType<T>(int length = 1)
                 where T : TokenType<T>
                 => new Token.OfType<T> {
-                    Index = cursor.Position,
+                    Index = cursor.Index,
                     Line = cursor.Line,
                     Column = cursor.Column,
                     Length = length
@@ -700,7 +700,7 @@ namespace Indra.Astra {
                 TextCursor cursor,
                 State state
             ) {
-                int start = cursor.Position;
+                int start = cursor.Index;
                 int line = cursor.Line;
                 int column = cursor.Column;
                 bool isNumeric = true;
@@ -709,7 +709,7 @@ namespace Indra.Astra {
                     // check for pure numbers
                     if(isNumeric && !char.IsDigit(cursor.Current)) {
                         // allow single underscores in numbers between digits
-                        if(cursor.Current is '_' && cursor.Position != start && cursor.Peek(1).IsDigit()) {
+                        if(cursor.Current is '_' && cursor.Index != start && cursor.Peek(1).IsDigit()) {
                             continue;
                         }
                         else {
@@ -746,7 +746,7 @@ namespace Indra.Astra {
                     Index = start,
                     Line = line,
                     Column = column,
-                    Length = cursor.Position - start + 1
+                    Length = cursor.Index - start + 1
                 };
 
                 #region Local Helper Functions

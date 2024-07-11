@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Reflection;
 
 using Meep.Tech.Collections;
@@ -86,5 +87,17 @@ namespace Indra.Astra.Tokens {
     public static TTokenType Get<TTokenType>()
       where TTokenType : TokenType<TTokenType>
       => (TTokenType)All[typeof(TTokenType)];
+
+    /// <summary>
+    /// Get a token type by its System.Type
+    /// </summary>
+    public static TokenType Get(System.Type type)
+      => All[type];
+
+    /// <summary>
+    /// Get a token type by its name.
+    /// </summary>
+    public static TokenType Get(string name, CompareOptions options = CompareOptions.None)
+      => All.Values.First(t => string.Compare(t.Name, name, null, options) == 0);
   }
 }

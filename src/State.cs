@@ -39,7 +39,7 @@ namespace Indra.Astra {
                         indentationTokens = new Token[CurrentLevel - PreviousLevel];
                         for(int i = indentationTokens.Length - 1; i >= 0; i--) {
                             indentationTokens[i] = new Token.OfType<Indent> {
-                                Index = cursor.Position - i - 1,
+                                Index = cursor.Index - i - 1,
                                 Length = 1,
                                 Line = cursor.Line,
                                 Column = cursor.Column - i - 1
@@ -50,7 +50,7 @@ namespace Indra.Astra {
                         indentationTokens = new Token[PreviousLevel - CurrentLevel];
                         for(int i = indentationTokens.Length - 1; i >= 0; i--) {
                             indentationTokens[i] = new Token.OfType<Dedent> {
-                                Index = cursor.Position - i - 1,
+                                Index = cursor.Index - i - 1,
                                 Length = 1,
                                 Line = cursor.Line,
                                 Column = cursor.Column - i - 1
