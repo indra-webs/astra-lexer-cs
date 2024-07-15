@@ -9,7 +9,6 @@ namespace Indra.Astra {
     /// <summary>
     /// The result of a lexer operation.
     /// </summary>
-    /// <param name="Text">The entirety of the source text that was processed by the lexer.</param>
     /// <remarks>
     ///  <term><b>See Also</b></term><related><list type="bullet"> 
     ///   <item>
@@ -22,7 +21,12 @@ namespace Indra.Astra {
     ///   </item>
     ///  </list></related>
     /// </remarks>
-    public abstract record Result(string Text) {
+    public abstract record Result {
+
+      /// <summary>
+      /// The entirety of the source text that was processed by the lexer.
+      /// </summary>
+      public string Text { get; }
 
       /// <summary>
       /// Whether the lexer operation was successful.
@@ -46,6 +50,9 @@ namespace Indra.Astra {
         get;
         init;
       } = [];
+
+      internal Result(string text)
+        => Text = text;
 
       /// <inheritdoc cref="Result.Text"/>
       public string GetText()

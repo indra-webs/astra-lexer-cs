@@ -39,7 +39,7 @@ namespace Indra.Astra {
       /// <summary>
       /// Creates a new failed result.
       /// </summary>
-      public Failure(
+      internal Failure(
         string source,
         Error[] errors,
         IEnumerable<Token>? tokens = null,

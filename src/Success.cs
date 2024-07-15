@@ -37,7 +37,7 @@ namespace Indra.Astra {
       /// <summary>
       /// Creates a new successful result.
       /// </summary>
-      public Success(
+      internal Success(
         string text,
         IEnumerable<Token> tokens,
         HashSet<TokenType> types
